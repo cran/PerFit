@@ -1,0 +1,27 @@
+export(A.KB,
+ D.KB,
+ E.KB,
+ C.Sato,
+ Cstar,
+ cutoff,
+ flagged.resp,
+ Ht,
+ lz,
+ lzstar,
+ lzpoly,
+ NCI,
+ plot.PerFit,
+ PRFplot,
+ r.pbis,
+ G,
+ Gnormed,
+ Gpoly,
+ Gnormed.poly,
+ U3,
+ ZU3,
+ U3poly)
+ 
+importFrom(irtoys,est,mlebme,wle)
+importFrom(ltm,gpcm,grm,factor.scores)
+
+S3method(plot, "PerFit")
