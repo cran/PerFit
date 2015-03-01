@@ -2,34 +2,59 @@
 \alias{lzpoly}
 \title{lzpoly person-fit statistic}
 \description{Compute the lzpoly (Drasgow, Levine, and Williams, 1985) person-fit statistic.}
-\usage{lzpoly(matrix,Ncat,ip = NA, model = "GRM", ability = NA, method = "EAP")}
-\arguments{
-  \item{matrix}{A data matrix of polytomous item scores: Persons as rows, items as columns, item scores are integers between 0 and (Ncat-1), no missing data.
-  }
-  \item{Ncat}{Number of answer options for each item.}
-  \item{ip}{Matrix with previously estimated item parameters: One row per item. The first (Ncat-1) columns contain the between-categories threshold parameters (for the GRM) or the item step difficulties (for the PCM and the GPCM). The last, Ncat-th, column has the slopes.
-  
-  If \code{ip} is provided then \code{ability} must also be provided.
-  
-  In case no item parameters are available then \code{ip=NA}.}
-  \item{model}{Specify the IRT model to use in order to estimate the item parameters. The options available are \code{"PCM"}, \code{"GPCM"}, and \code{"GRM"} (default).}
-  \item{ability}{Vector with previoulsy estimated latent ability parameters, one per respondent, following the order of the row index of \code{matrix}.
-  
-  In case no ability parameters are available then \code{ability=NA}.}
-  \item{method}{Specify the method to use in order to estimate the latent ability parameters. The options available are \code{"EB"}, \code{"EAP"} (default), and \code{"MI"}.}
-}
-\details{
-Statistic \code{lzpoly} is the natural extension of \code{\link{lz}} to polytomously scores items. In this case the user can choose one from three possible IRT models to fit the data: The partial credit model (\code{model="PCM"}), the generalized partial credit model (\code{model="GPCM"}), or the graded response model (\code{model="GRM"}). Ability parameters can be estimated by means of one of three methods: Empirical Bayes (\code{"EB"}), expected a posteriori (\code{"EAP"}), or multiple imputation (\code{"MI"}).
 
-Both item and ability parameters may be provided as function parameters (\code{ip} and \code{ability}, respectively). If \code{ip} is provided then \code{ability} must also be provided. The reason is that the estimation of the ability parameters is done via the function \code{factor.scores} from the \pkg{ltm} package, and this procedure requires an object of a specific class (\code{gpcm} or \code{grm}) containing the estimated item parameters (i.e., providing a matrix of item parameters to \code{ip} is not sufficient).
+\usage{
+lzpoly(matrix, Ncat, 
+       NA.method = "NPModel", Save.MatImp = FALSE,
+       IP = NULL, IRT.PModel = "GRM", Ability = NULL, Ability.PModel = "EAP")
+}
+
+\arguments{
+  \item{matrix}{A data matrix of polytomous item scores: Persons as rows, items as columns, item scores are integers between 0 and (Ncat-1), missing values allowed.}
+  \item{Ncat}{Number of answer options for each item.}
+  \item{NA.method}{Simple imputation method to use in case missing values exist. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
+  \item{Save.MatImp}{Logical. Save (imputted) data matrix to file? Default is FALSE.}
+  \item{IP}{Matrix with previously estimated item parameters: One row per item. The first (Ncat-1) columns contain the between-categories threshold parameters (for the GRM) or the item step difficulties (for the PCM and the GPCM). The last, Ncat-th, column has the slopes.
+  
+  In case no item parameters are available then \code{IP=NULL}.}
+  \item{IRT.PModel}{Specify the IRT model to use in order to estimate the item parameters (only if \code{IP=NULL}). The options available are \code{"PCM"}, \code{"GPCM"}, and \code{"GRM"} (default).}
+  \item{Ability}{Vector with previoulsy estimated latent ability parameters, one per respondent, following the order of the row index of \code{matrix}.
+  
+  In case no ability parameters are available then \code{Ability=NULL}.}
+  \item{Ability.PModel}{Specify the method to use in order to estimate the latent ability parameters (only if \code{Ability=NULL}). The options available are \code{"EB"}, \code{"EAP"} (default), and \code{"MI"}.}
+}
+
+\details{
+Statistic \code{lzpoly} is the natural extension of \code{\link{lz}} to polytomously scores items. In this case the user can choose one from three possible IRT models to fit the data: The partial credit model (\code{IRT.PModel="PCM"}), the generalized partial credit model (\code{IRT.PModel="GPCM"}), or the graded response model (\code{IRT.PModel="GRM"}). Ability parameters can be estimated by means of one of three methods: Empirical Bayes (\code{Ability.PModel="EB"}), expected a posteriori (\code{Ability.PModel="EAP"}), or multiple imputation (\code{Ability.PModel="MI"}).
+
+Both item and ability parameters may be provided as function parameters (\code{IP} and \code{Ability}, respectively). If \code{IP} is provided then \code{Ability} must also be provided. The reason is that the estimation of the ability parameters is done via the function \code{factor.scores} from the \pkg{ltm} package, and this procedure requires an object of a specific class (\code{gpcm} or \code{grm}) containing the estimated item parameters (i.e., providing a matrix of item parameters to \code{IP} is not sufficient).
 
 Aberrant response behavior is (potentially) indicated by small values of lzpoly (i.e., in the left tail of the sampling distribution).
+
+Missing values in \code{matrix} are imputed by one of three single imputation methods: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
+\itemize{
+\item Hotdeck imputation replaces missing responses of an examinee ('recipient') by item scores from the examinee which is closest to the recipient ('donor'), based on the recipient's nonmissing item scores. The similarity between nonmissing item scores of recipients and donors is based on the sum of absolute differences between the corresponding item scores. The donor's response pattern is deemed to be the most similar to the recipient's response pattern in the group, so item scores of the former are used to replace the corresponding missing values of the latter. When multiple donors are equidistant to a recipient, one donor is randomly drawn from the set of all donors.
+\item The nonparametric model imputation method is similar to the hotdeck imputation, but item scores are generated from multinomial distributions with probabilities defined by donors with similar total score than the recipient (based on all items except the NAs).
+\item The parametric model imputation method is similar to the hotdeck imputation, but item scores are generated from multinomial distributions with probabilities estimated by means of parametric IRT models (\code{IRT.PModel = "PCM"}, \code{"GPCM"}, or \code{"GRM"}). Item parameters (\code{IP}) and ability parameters (\code{Ability}) may be provided for this purpose (otherwise the algorithm finds estimates for these parameters).
 }
+}
+
 \value{
-An object of class "PerFit", which is a list with elements:
-  \item{PFscores }{A vector of length \eqn{N} (number of respondents) with the values of the person-fit statistic.}
-  \item{PFstatistic}{The name of the person-fit statistic used.}
+An object of class "PerFit", which is a list with 12 elements:
+  \item{PFscores}{A list of length \eqn{N} (number of respondents) with the values of the person-fit statistic.}
+  \item{PFstatistic}{The person-fit statistic used.}
+  \item{PerfVects}{Not applicable.}
+  \item{ID.all0s}{Not applicable.}
+  \item{ID.all1s}{Not applicable.}
+  \item{matrix}{The data matrix after imputation of missing values was performed (if applicable).}
+  \item{Ncat}{The number of response categories.}
+  \item{IRT.PModel}{The parametric IRT model used.}
+  \item{IP}{The \eqn{I}xNcat matrix of estimated item parameters.}
+  \item{Ability.PModel}{The method used to estimate abilities used.}
+  \item{Ability}{The vector of \eqn{N} estimated ability parameters.}
+  \item{NAs.method}{The imputation method used (if applicable).}
 }
+
 \references{
 Drasgow, F., Levine, M. V., and Williams, E. A. (1985) Appropriateness measurement with polychotomous item response models and standardized indices. \emph{British Journal of Mathematical and Statistical Psychology}, \bold{38(1)}, 67--86.
 
@@ -42,14 +67,16 @@ Meijer, R. R., and Sijtsma, K. (2001) Methodology review: Evaluating person fit.
 Molenaar, I. W., and Hoijtink, H. (1990) The many null distributions of person fit indices. \emph{Psychometrika}, \bold{55(1)}, 75--106. 
 
 Snijders, T. B. (2001) Asymptotic null distribution of person fit statistics with estimated person parameter. \emph{Psychometrika}, \bold{66(3)}, 331--342. 
+
+Zhang, B., and Walker, C. M. (2008) Impact of missing data on person-model fit and person trait estimation. \emph{Applied Psychological Measurement}, \bold{32(6)}, 466--479.
 }
 \author{Jorge N. Tendeiro \email{j.n.tendeiro@rug.nl}}
 \seealso{\code{\link{lz}},\code{\link{lzstar}}}
 \examples{
 # Load the physical functioning data (polytomous item scores):
-data(PhysFuncData);
+data(PhysFuncData)
 
 # Compute the lzpoly scores:
-lzpoly(PhysFuncData,Ncat=3);
+lzpoly.out <- lzpoly(PhysFuncData,Ncat=3)
 }
 \keyword{univar}

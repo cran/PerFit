@@ -1,16 +1,15 @@
 \name{PerFit-package}
 \alias{PerFit-package}
-\alias{PerFit}
 \docType{package}
 \title{Person Fit}
-\description{Person fit consists of a set of techniques aimed at detecting unusual responses to tests or questionnaires. There are several person-fit statistics available in the literature, see Karabatsos (2003) and Meijer and Sijtsma (2001) for comprehensive reviews. Both dichotomous and polytomous types of items are considered. This R-package outputs the values of the chosen person-fit statistic, the IDs of the respondents that were flagged according to some criterion (based on empirical quantiles, on critical values stipulated by the user, or on critical values estimated using bootstrapping), and plots the sample distribution of the scores of the person-fit statistic. Nonparametric person response functions (Sijtsma and Meijer, 2001) may also be requested in order to help interpreting individual answering behaviors (dichotomous data only).
+\description{Person fit consists of a set of techniques aimed at detecting unusual responses to tests or questionnaires. There are several person-fit statistics available in the literature, see Karabatsos (2003) and Meijer and Sijtsma (2001) for comprehensive reviews. Both dichotomous and polytomous types of items are considered. This R-package outputs the values of the chosen person-fit statistic, the IDs of the respondents that were flagged, and plots the sample distribution of the scores of the person-fit statistic. Nonparametric person response functions (Sijtsma and Meijer, 2001) may also be requested in order to help interpreting individual answering behaviors (dichotomous data only).
 }
 \details{
 \tabular{ll}{
 Package: \tab PerFit\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2014-08-26\cr
+Version: \tab 1.3\cr
+Date: \tab 2015-02-28\cr
 License: \tab GPL Version 2 or later\cr
 }
 The \pkg{PerFit} package contains several person-fit functions. The goal is to detect response vectors that seem to be strange in terms of the sample of respondents or in terms to an item response theory (IRT) model.
@@ -33,7 +32,7 @@ There are many person-fit statistics available in the literature. Statistics are
 \code{\link{lzstar}}        \tab Snijders (2001)                      \tab Dicho            \tab Param\cr
 \code{\link{U3poly}}        \tab Emons (2008)                         \tab Poly             \tab NParam\cr
 }
-All functions above have an output of class \code{PerFit}, which is a list containing a vector with the computed person-fit scores (\code{PFscores}) and the name of the statistic used (\code{PFstatistic}).
+All functions above have an output of class \code{PerFit}.
 
 The package provides other functions that help analyzing the data when conducting person-fit analyses:
 \tabular{ll}{
@@ -55,6 +54,20 @@ Functions \code{plot.PerFit} and \code{PRFplot} now allow the user to edit the a
 \item Version 1.2 (August 2014)
 
 Some output values of some functions were renamed for the sake of consistency. The package documentation was adapted accordingly.
+
+\item Version 1.3 (March 2015)
+
+The package underwent a major revision:
+\itemize{
+\item Class \code{PerFit} now consists of a list with 12 objects.
+\item New methods for objects of class \code{PerFit} were added (\code{summary}, \code{print}).
+\item Routines accomodating for missing values were added.
+\item Function \code{cutoff} was updated. Now, model-fitting item response patterns are generated in order to find the cutoff value.
+\item Function \code{plot.PerFit} now allows displaying a bootstrap percentile confidence interval for the cutoff statistic, as well as ticks marking the flagged respondents.
+\item Person response functions are now approximated by functional data objects computed by means of the \code{fda} package. The functional data objects are returned to the user.
+\item Standard errors for the person-fit statistics are now available (see function \code{PerFit.SE}).
+\item Many control checks were added throughout the entire code.
+}
 }
 
 }
@@ -103,35 +116,25 @@ van der Flier, H. (1982) Deviant response patterns and comparability of test sco
 
 \examples{
 # Load the inadequacy scale data (dichotomous item scores):
-data(InadequacyData);
+data(InadequacyData)
 
 # As an example, compute the Ht person-fit scores:
-Ht.PF <- Ht(InadequacyData);
-Ht.PF$PFscores
+Ht.out <- Ht(InadequacyData)
+# Ht.out$PFscores
 
-# Compute the cutoff value based on the 1% most extreme scores:
-cutoff(Ht.PF,Qlvl=.01);
+# Compute the cutoff value at 1% level:
+set.seed(124) # To fix the random seed generator.
+Ht.cut <- cutoff(Ht.out, Blvl=.01)
 
 # Plot the sample distribution of the Ht scores with the above cutoff superimposed:
-plot(Ht.PF,Qlvl=.01);
+plot(Ht.out, cutoff.obj=Ht.cut)
 
-# Determine which respondents were flagged by Ht at 1%:
-flagged.resp(InadequacyData,x=Ht.PF,Qlvl=.01);
+# Determine which respondents were flagged by Ht at 1% level:
+flagged.resp(Ht.out, cutoff.obj=Ht.cut, scores=FALSE)
 # Flagged respondents: 30, 37, 46, 49,...
 
 # Plot the person response function of respondent 30 (flagged as aberrant):
-PRFplot(InadequacyData,respID=30);
+Resp30 <- PRFplot(InadequacyData, respID=30)
 # Plot the person response function of respondent 35 (not flagged as aberrant):
-PRFplot(InadequacyData,respID=35);
-
-# Load the physical functioning data (polytomous items scores):
-data(PhysFuncData);
-
-# Compute Gnormed.poly:
-Gnp.PF <- Gnormed.poly(PhysFuncData,Ncat=3);
-# Determine which respondents were flagged at 5%:
-flagged.resp(PhysFuncData,x=Gnp.PF);
-
-# Compute lzpoly:
-lzpoly(PhysFuncData,Ncat=3)
+Resp35 <- PRFplot(InadequacyData, respID=35)
 }

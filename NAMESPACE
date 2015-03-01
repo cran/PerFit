@@ -1,27 +1,35 @@
-export(A.KB,
- D.KB,
- E.KB,
- C.Sato,
- Cstar,
- cutoff,
- flagged.resp,
- Ht,
- lz,
- lzstar,
- lzpoly,
- NCI,
- plot.PerFit,
- PRFplot,
- r.pbis,
- G,
- Gnormed,
- Gpoly,
- Gnormed.poly,
- U3,
- ZU3,
- U3poly)
- 
+export(A.KB)
+export(C.Sato)
+export(Cstar)
+export(D.KB)
+export(E.KB)
+export(G)
+export(Gnormed)
+export(Gnormed.poly)
+export(Gpoly)
+export(Ht)
+export(NCI)
+export(PRFplot)
+export(PerFit.PFS)
+export(PerFit.SE)
+export(U3)
+export(U3poly)
+export(ZU3)
+export(cutoff)
+export(flagged.resp)
+export(lz)
+export(lzpoly)
+export(lzstar)
+export(r.pbis)
+
+importFrom(fda,create.bspline.basis,eval.basis,fd)
+importFrom(Hmisc,rMultinom)
 importFrom(irtoys,est,mlebme,wle)
 importFrom(ltm,gpcm,grm,factor.scores)
+importFrom(MASS,write.matrix)
+importFrom(Matrix,bdiag)
+importFrom(mirt,mirt)
 
-S3method(plot, "PerFit")
+S3method(plot,PerFit)
+S3method(print,PerFit)
+S3method(summary,PerFit)
