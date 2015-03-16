@@ -1,4 +1,4 @@
-065d2c2af72db956e397525a14bbd843 *DESCRIPTION
+15b6a07550eb2c9fab1c7ba0de3d11db *DESCRIPTION
 fc851ac8ad991d1355359bcc55ecb0a1 *NAMESPACE
 42a51fca2f46600e4ce6c6412bdfadcb *R/ADE.R
 34fa6b10a7526ef58838c3580f573440 *R/Accessory.R
@@ -22,7 +22,7 @@ e7c7aafd830212160fe942cf8ee16019 *R/PRF.R
 72b9edd676bf8b33441fc7d00f8240a6 *R/PerFitPFS.R
 7fd7568cefc6190cd2b0ce9707a62733 *R/PerFitSE.R
 3e0cbe70e6ee96242e269cb82743bac8 *R/PlotPerFit.R
-32f2d3dd4bdb9e561d989c9e2d7227a9 *R/PrintPerFit.R
+08dd79c77d38543a6d6b721940179706 *R/PrintPerFit.R
 933c6a7c5e7b993230832d0ca172cdc8 *R/SanityChecks.R
 879a2fc1c0dbf9e0de366d0c675404c1 *R/SummaryPerFit.R
 643827aae70ce0c513799cf7f5df6b2e *R/U3.R
@@ -44,7 +44,7 @@ d0cb2bcfea3fdeeffdcf0e2b0c70e8d9 *man/InadequacyData.Rd
 3dad9f05bbabe04f40c17404e92da57c *man/IntelligenceData.Rd
 c7dff41609de2f0790d2a3ba6247269f *man/NCI.Rd
 73882f5aaab2f8a5db5be8b2b447fe7a *man/PRFplot.Rd
-430a4c7144a64b11634c073546c31ca0 *man/PerFit-package.Rd
+69ab20ee883f4ab3779f17ef95f32b58 *man/PerFit-package.Rd
 3341a57afe8310742017d2edc91ed8bd *man/PerFitPFS.Rd
 0c17fbf8707f1c0200135243c69b4ce6 *man/PerFitSE.Rd
 6d9600d9f7eb748e25e4bb1740621f72 *man/PhysFuncData.Rd
@@ -52,9 +52,9 @@ a130ee4755d510d270224d1d4c1fe78a *man/U3.Rd
 dd309c01e8a75a13a3878287db5c2b53 *man/U3poly.Rd
 15825aa9f27545daac4b71bac2b5f142 *man/cutoff.Rd
 42e1a1f043659ea0954618b8f09b29b7 *man/flagged.resp.Rd
-e6ca522fa8c193242dcc25b35575cdcf *man/lz.Rd
+eb43624b83e0baff84b52202c2ef9e2b *man/lz.Rd
 bde3776e1f71dc3b7eb037c2852943e6 *man/lzpoly.Rd
 de146b9c9cc7724c4dbd140fb4dd8e55 *man/plot.PerFit.Rd
-bf5636e5ee74f8e4ced2df31c44f7bcc *man/print.PerFit.Rd
+3c5956e093755c15a640bbb5cbc79ead *man/print.PerFit.Rd
 de26171bed361351ae75c3c85302d75a *man/r.pbis.Rd
 8f1e740247749c7226c881fcc3809547 *man/summary.PerFit.Rd

@@ -89,11 +89,9 @@ data(InadequacyData)
 # Compute the lz scores using a subsample of the first 200 response vectors:
 lz.out <- lz(InadequacyData[1:200,])
 # Use parameters estimated externally (in this case item parameters estimated by mirt):
-ip.mirt <- mirt(InadequacyData[1:200,], 1)
-ip.mirt <- head(as.matrix(coef(ip.mirt, IRTpars = TRUE, as.data.frame = TRUE)), -2)
-ip.mirt <- matrix(ip.mirt, nrow = 28, byrow = TRUE)
-ip.mirt <- ip.mirt[,1:3]
-lz.out2 <-  lz(InadequacyData[1:200,], IP = ip.mirt)
+mod <- mirt(InadequacyData[1:200,], 1)
+ip.mirt <- coef(mod, IRTpars = TRUE, simplify = TRUE, digits = Inf)$items[,c('a', 'b', 'g')]
+lz.out2 <- lz(InadequacyData[1:200,], IP = ip.mirt)
 
 # Compute the lzstar scores using a subsample of the first 200 response vectors:
 lzstar.out <- lzstar(InadequacyData[1:200,])

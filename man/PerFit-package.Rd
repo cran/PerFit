@@ -8,8 +8,8 @@
 \tabular{ll}{
 Package: \tab PerFit\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2015-02-28\cr
+Version: \tab 1.3.1\cr
+Date: \tab 2015-03-16\cr
 License: \tab GPL Version 2 or later\cr
 }
 The \pkg{PerFit} package contains several person-fit functions. The goal is to detect response vectors that seem to be strange in terms of the sample of respondents or in terms to an item response theory (IRT) model.
