@@ -4,7 +4,7 @@
 ########################################################################################
 ########################################################################################
 U3 <- function(matrix, 
-               NA.method="NPModel", Save.MatImp=FALSE, 
+               NA.method="Pairwise", Save.MatImp=FALSE, 
                IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -23,18 +23,40 @@ U3 <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi <- colMeans(matrix.sv); qi <- 1-pi
+  pi <- colMeans(matrix.sv, na.rm = TRUE); qi <- 1-pi
   # If there are answer options not chosen by any respondent then some entries in pi are 0 or 1.
   # Below all corresponding logs are set from Inf to 0.
   # (Reason: They carry no individual information regarding aberrant response behavior.):
   log.odds     <- log(pi/qi)
   log.odds[is.infinite(log.odds)] <- 0
-  log.odds.ord <- sort(log.odds,decreasing=TRUE)
+  log.odds.ord <- sort(log.odds, decreasing = TRUE)
   # 
-  sum.first.logodds <- cumsum(log.odds.ord)[NC]
-  logodds.ordrev    <- sort(log.odds, decreasing=FALSE)
-  sum.last.logodds  <- cumsum(logodds.ordrev)[NC]
-  res.red           <- as.vector((sum.first.logodds - as.vector(matrix %*% log.odds)) / (sum.first.logodds - sum.last.logodds))
+  sum.first.logodds <- if (sum(is.na(matrix)) > 0)
+  {
+    apply(matrix, 1, function(vec)
+    {
+      NA.vec <- sum(vec, na.rm = TRUE)
+      sum(log.odds.ord[!is.na(vec)][1:NA.vec])
+    })
+  } else
+  {
+    cumsum(log.odds.ord)[NC]
+  }
+  log.odds.ordrev  <- sort(log.odds, decreasing = FALSE)
+  sum.last.logodds <- if (sum(is.na(matrix)) > 0)
+  {
+    apply(matrix, 1, function(vec)
+    {
+      NA.vec <- sum(vec, na.rm = TRUE)
+      sum(log.odds.ordrev[!is.na(vec)][1:NA.vec])
+    })
+  } else
+  {
+    cumsum(log.odds.ordrev)[NC]
+  }
+  matrix.NAs.0 <- matrix
+  matrix.NAs.0[is.na(matrix.NAs.0)] <- 0
+  res.red           <- as.vector((sum.first.logodds - as.vector(matrix.NAs.0 %*% log.odds)) / (sum.first.logodds - sum.last.logodds))
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)
   # Export results:

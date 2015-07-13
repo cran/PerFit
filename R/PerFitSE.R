@@ -7,12 +7,12 @@ PerFit.SE <- function(x)
   matrix <- x$Matrix      # 'matrix' is NA-free
   N      <- dim(matrix)[1]; I <- dim(matrix)[2] 
   PFS    <- x$PFStatistic
-  JK.mat <- matrix(NA, nrow=N, ncol=I)
+  JK.mat <- matrix(NA, nrow = N, ncol = I)
   if (PFS == "lzpoly")
   {
     for (it in 1:I)
     {
-      JK.mat[,it] <- do.call(PFS,c( list(matrix[,-it]), list(Ncat=x$Ncat, IP=NULL, Ability=NULL) ))$PFscores[,1]
+      JK.mat[, it] <- do.call(PFS, c( list(matrix[, -it]), list(Ncat = x$Ncat, IP = NULL, Ability = NULL) ))$PFscores[, 1]
     }
   } else
   {
@@ -20,22 +20,23 @@ PerFit.SE <- function(x)
     {
       for (it in 1:I)
       {
-        JK.mat[,it] <- do.call(PFS,c( list(matrix[,-it]), list(IP=x$IP[-it,], Ability=NULL) ))$PFscores[,1]
+        JK.mat[, it] <- do.call(PFS, c( list(matrix[, -it]), list(IP = x$IP[-it, ], Ability = NULL) ))$PFscores[, 1]
       }
     }
     if (PFS %in% poly.PFS)
     {
       for (it in 1:I)
       {
-        JK.mat[,it] <- do.call(PFS,c( list(matrix[,-it]), list(Ncat=x$Ncat, IP=x$IP[-it,], Ability=NULL) ))$PFscores[,1]
+        JK.mat[, it] <- do.call(PFS, c( list(matrix[, -it]), list(Ncat = x$Ncat, IP=x$IP[-it, ], Ability = NULL) ))$PFscores[, 1]
       }
     }
   }
-  SE <- sqrt( ((I-1)/I) * rowSums((JK.mat - rowMeans(JK.mat, na.rm=TRUE))^2, na.rm=TRUE) )
-  PFS.NA    <- c(x$ID.all0s, x$ID.all1s)
+  I.NAs  <- I - rowSums(is.na(JK.mat))
+  SE     <- sqrt( ((I.NAs - 1)/I.NAs ) * rowSums((JK.mat - rowMeans(JK.mat, na.rm = TRUE))^2, na.rm = TRUE) )
+  PFS.NA <- c(x$ID.all0s, x$ID.all1s)
   if (!is.null(PFS.NA))
   {
     SE[PFS.NA] <- NA
   }
-  cbind(PFscores = x$PFscores[,1], PFscores.SE = round(SE, 4))
+  return(cbind(PFscores = x$PFscores[, 1], PFscores.SE = round(SE, 4)))
 }

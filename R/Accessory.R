@@ -1,21 +1,21 @@
-# Compute final PFS vector:----
+# final.PFS(): Compute final PFS vector ----
 final.PFS <- function(res.red, all.0s, all.1s, N)
 {
   if (length(c(all.0s, all.1s)) > 0)
   {
-    res <- rep(NA,N)
+    res <- rep(NA, N)
     res[(1:N)[-c(all.0s, all.1s)]] <- res.red
   } else
   {
     res <- res.red
   }
-  res
+  return(res)
 }
 
-# Process the PFS scores from vector to data frame:----
+# res.process(): Process the PFS scores from vector to data frame ----
 res.process <- function(matrix, N, res)
 {
-  res <- data.frame(PFscores=round(res,4))
+  res <- data.frame(PFscores = round(res, 4))
   if (is.null(row.names(matrix)))
   {
     row.names(res) <- rep(paste0("Resp.", 1:N))
@@ -23,10 +23,10 @@ res.process <- function(matrix, N, res)
   {
     row.names(res) <- row.names(matrix)
   }
-  res
+  return(res)
 }
 
-# Export results (nonparametric):----
+# export.res.NP(): Export results (nonparametric) ----
 export.res.NP <- function(matrix, N, res, PFStatistic, part.res, Ncat, NAs, 
                           IRT.PModel, IP, Ability.PModel, Ability, IP.NA, Ability.NA, NAs.imp)
 {
@@ -39,10 +39,10 @@ export.res.NP <- function(matrix, N, res, PFStatistic, part.res, Ncat, NAs,
               Ability = Ability, 
               NAs.method = if(NAs.imp) {NAs} else {NULL})
   class(res) <- "PerFit"
-  res
+  return(res)
 }
 
-# Export results (parametric):----
+# export.res.P(): Export results (parametric) ----
 export.res.P <- function(matrix, N, res, PFStatistic, part.res, Ncat, NAs, 
                          IRT.PModel, IP, Ability.PModel, Ability, IP.NA, Ability.NA, NAs.imp)
 {
@@ -55,11 +55,10 @@ export.res.P <- function(matrix, N, res, PFStatistic, part.res, Ncat, NAs,
               Ability = Ability, 
               NAs.method = if(NAs.imp) {NAs} else {NULL})
   class(res) <- "PerFit"
-  res
+  return(res)
 }
 
-
-# Estimate item parameters if not provided (using 'irtoys'):----
+# estIP(): Estimate item parameters if not provided (using 'irtoys') ----
 estIP <- function(matrix, ip, model)
 {
   I <- dim(matrix)[2]
@@ -77,33 +76,49 @@ estIP <- function(matrix, ip, model)
   ip
 }
 
-# Estimate item parameters if not provided (polytomous):----
+# estIP.poly(): Estimate item parameters if not provided (polytomous) ----
 estIP.poly <- function(matrix, Ncat, ip, model)
 {
   I       <- dim(matrix)[2]
-  matrix2 <- data.frame(apply(matrix, 2, as.factor)) # eliminates item levels with no answers
+  matrix2 <- data.frame(apply(matrix + 1, 2, as.factor)) # eliminates item levels with no answers
+  # Sanity check - IP model (polytomous):
+  Sanity.IPm.poly(model)
   if (is.null(ip)) 
   {
-    # Sanity check - IP model (polytomous:
-    Sanity.IPm.poly(model)
     ip <- switch(model,
-                 PCM  =gpcm(matrix2, constraint="rasch", IRT.param=TRUE),
-                 GPCM =gpcm(matrix2, constraint="gpcm" , IRT.param=TRUE),
-                 GRM  =grm (matrix2, constrained=FALSE , IRT.param=TRUE))
+                 PCM  = gpcm(matrix2, constraint = "rasch", IRT.param = TRUE),
+                 GPCM = gpcm(matrix2, constraint = "gpcm" , IRT.param = TRUE),
+                 GRM  = grm (matrix2, constrained = FALSE , IRT.param = TRUE))
     ip.coef <- coef(ip)
   } else 
   {
-    ip <- as.matrix(ip)
+#     ip <- as.matrix(ip)
+#     # Sanity check - IP matrix adequacy (polytomous):
+#     Sanity.IPa.poly(ip, I, Ncat)
+#     ip.coef <- ip
+    
     # Sanity check - IP matrix adequacy (polytomous):
     Sanity.IPa.poly(ip, I, Ncat)
-    ip.coef <- ip
+    ip     <- as.matrix(ip)
+    ip.ltm <- cbind(ip[, -ncol(ip)] * ip[, ncol(ip)], ip[, ncol(ip)])
+    ip     <- switch(model,
+                 PCM  = gpcm(matrix2, constraint = "rasch", IRT.param = TRUE, 
+                             start.val = unlist(apply(ip.ltm, 1, list), recursive = FALSE), 
+                             control = list(iter.qN = 0, optimizer = "optim")),
+                 GPCM = gpcm(matrix2, constraint = "gpcm" , IRT.param = TRUE, 
+                             start.val = unlist(apply(ip.ltm, 1, list), recursive = FALSE), 
+                             control = list(iter.qN = 0, optimizer = "optim")),
+                 GRM  = grm (matrix2, constrained = FALSE , IRT.param = TRUE, 
+                             start.val = unlist(apply(ip.ltm, 1, list), recursive = FALSE), 
+                             control = list(iter.qN = 0)))
+    ip.coef <- coef(ip)
   }
   # In case NOT all answer categories of all items were used:
   if (is.list(ip.coef)) 
   {
-    abs.freqs <- apply(matrix,2,table)
-    abs.freqs <- lapply(abs.freqs,function(vect) as.numeric(names(vect)))
-    tmp       <- matrix(NA,nrow=I,ncol=Ncat)
+    abs.freqs <- apply(matrix, 2, table)
+    abs.freqs <- lapply(abs.freqs, function(vect) as.numeric(names(vect)))
+    tmp       <- matrix(NA, nrow = I, ncol = Ncat)
     for (i in 1:I) 
     {
       tmp[i,abs.freqs[[i]][-length(abs.freqs[[i]])]+1] <- ip.coef[[i]][-length(abs.freqs[[i]])]
@@ -115,7 +130,7 @@ estIP.poly <- function(matrix, Ncat, ip, model)
   list(ip.coef, ip)
 }
 
-# Estimate ability parameters if not provided (using 'ltm'):----
+# estAb(): Estimate ability parameters if not provided (using 'ltm') ----
 estAb <- function(matrix, ip, ability, method, mu, sigma)
 {
   N <- dim(matrix)[1]
@@ -124,9 +139,9 @@ estAb <- function(matrix, ip, ability, method, mu, sigma)
     # Sanity check - Ability method:
     Sanity.Abm(method)
     ability <- switch(method,
-                      ML = mlebme(matrix, ip, mu, sigma, method="ML")[,1],
-                      BM = mlebme(matrix, ip, mu, sigma, method="BM")[,1],
-                      WL = wle(matrix, ip)[,1])
+                      ML = mlebme(matrix, ip, mu, sigma, method = "ML")[, 1],
+                      BM = mlebme(matrix, ip, mu, sigma, method = "BM")[, 1],
+                      WL = wle(matrix, ip)[, 1])
   } else
   {
     ability <- as.vector(ability)
@@ -136,17 +151,17 @@ estAb <- function(matrix, ip, ability, method, mu, sigma)
   ability
 }
 
-# Estimate ability parameters if not provided (using 'ltm') (polytomous):----
+# estAb.poly(): Estimate ability parameters if not provided (using 'ltm') (polytomous) ----
 estAb.poly <- function(matrix, ip.ltm, ability, method)
 {
   N       <- dim(matrix)[1]
-  matrix2 <- data.frame(apply(matrix,2,as.factor)) # eliminates item levels with no answers
+  matrix2 <- data.frame(apply(matrix + 1, 2, as.factor)) # eliminates item levels with no answers
   if (is.null(ability)) 
   {
     # Sanity check - Ability method:
     Sanity.Abm.poly(method)
-    ability <- ltm::factor.scores(ip.ltm, resp.patterns=matrix2, method=method)
-    ability <- ability$score.dat[, ncol(ability$score.dat)-1]
+    ability <- ltm::factor.scores(ip.ltm, resp.patterns = matrix2, method = method)
+    ability <- ability$score.dat[, ncol(ability$score.dat) - 1]
   } else
   {
     ability <- as.vector(ability)
@@ -156,7 +171,7 @@ estAb.poly <- function(matrix, ip.ltm, ability, method)
   ability
 }
 
-# Compute P.CRF (polytomous):----
+# estP.CRF(): Compute P.CRF (polytomous) ----
 estP.CRF <- function(I, Ncat, model, ip.coef, ability)
 {
   N <- length(ability)
@@ -168,7 +183,7 @@ estP.CRF <- function(I, Ncat, model, ip.coef, ability)
     P.ISRF <- t(
       sapply(ability, function(x)
       {
-        as.vector(t(1/(1+exp(-ip.coef[,ncol(ip.coef)]*(x-ip.coef[,-ncol(ip.coef)])))))
+        as.vector(t(1 / (1 + exp(-ip.coef[, ncol(ip.coef)]*(x - ip.coef[, -ncol(ip.coef)])))))
       })
     )
     # Fix for datasets with non-chosen answer options (the NA entries):
@@ -177,32 +192,32 @@ estP.CRF <- function(I, Ncat, model, ip.coef, ability)
     #   entry (x+1) for NAs in entry x
     if (sum(is.na(ip.coef)) > 0) 
     {
-      first.cols  <- (which(is.na(ip.coef[,1]))-1)*M+1; P.ISRF[,first.cols][is.na(P.ISRF[,first.cols])] <- 1
-      last.cols   <- which(is.na(ip.coef[,M]))*M; P.ISRF[,last.cols][is.na(P.ISRF[,last.cols])] <- 0
-      middle.cols <- sort(which(is.na(t(cbind(rep(0,I),ip.coef[,-c(1,M,Ncat)],rep(0,I))))), decreasing=TRUE)
-      for (i in 1:length(middle.cols)){P.ISRF[,middle.cols] <- P.ISRF[,middle.cols+1]}
+      first.cols  <- (which(is.na(ip.coef[, 1]))-1) * M + 1; P.ISRF[, first.cols][is.na(P.ISRF[, first.cols])] <- 1
+      last.cols   <- which(is.na(ip.coef[, M]))*M; P.ISRF[, last.cols][is.na(P.ISRF[, last.cols])] <- 0
+      middle.cols <- sort(which(is.na(t(cbind(rep(0, I), ip.coef[, -c(1, M, Ncat)], rep(0, I))))), decreasing = TRUE)
+      for (i in 1:length(middle.cols)){P.ISRF[, middle.cols] <- P.ISRF[, middle.cols + 1]}
     }
-    P.CRF <- matrix(, nrow=N, ncol=I*Ncat)
+    P.CRF <- matrix(, nrow = N, ncol = I * Ncat)
     for (i in 1:I) 
     {
-      P.ISRF.item <- -cbind(rep(1,N), P.ISRF[,((i-1)*M+1):(i*M)], rep(0,N))
-      P.CRF[,((i-1)*Ncat+1):(i*Ncat)] <- P.ISRF.item[,(2:(M+2))] - P.ISRF.item[,(1:(M+1))]
+      P.ISRF.item <- -cbind(rep(1, N), P.ISRF[, ((i-1)*M+1):(i*M)], rep(0, N))
+      P.CRF[, ((i-1)*Ncat+1):(i*Ncat)] <- P.ISRF.item[, (2:(M+2))] - P.ISRF.item[, (1:(M+1))]
     }
   }
   
   # Based on PCM or GPCM:
   if (model == "PCM" | model == "GPCM") 
   {
-    lin.it <- t(sapply(ability,function(x){as.vector(t(ip.coef[,ncol(ip.coef)]*(x-ip.coef[,-ncol(ip.coef)])))}))
-    lin.it[,is.na(as.vector(t(ip.coef[,-ncol(ip.coef)])))] <- 0 # NAs -> 0 to eliminate these terms from the sums
-    P.CRF  <- matrix(, nrow=N, ncol=I*Ncat)
-    tri    <- matrix(1, nrow=M+1, ncol=M+1) * upper.tri(tri, diag=TRUE)
+    lin.it <- t(sapply(ability, function(x){as.vector(t(ip.coef[, ncol(ip.coef)] * (x - ip.coef[, -ncol(ip.coef)])))}))
+    lin.it[, is.na(as.vector(t(ip.coef[, -ncol(ip.coef)])))] <- 0 # NAs -> 0 to eliminate these terms from the sums
+    P.CRF  <- matrix(, nrow = N, ncol = I * Ncat)
+    tri    <- matrix(1, nrow = M + 1, ncol = M + 1)
+    tri    <- upper.tri(tri, diag = TRUE)
     for (i in 1:I) 
     {
-      num <- exp(cbind(rep(0,N), lin.it[,((i-1)*M+1):(i*M)]) %*% tri)
-      P.CRF[, ((i-1)*Ncat+1):(i*Ncat)] <- num / rowSums(num)
+      num <- exp(cbind(rep(0, N), lin.it[, ((i-1)*M+1):(i*M)]) %*% tri)
+      P.CRF[, ((i-1) * Ncat+1):(i*Ncat)] <- num / rowSums(num)
     }  
   }
-  
-  P.CRF
+  return(P.CRF)
 }

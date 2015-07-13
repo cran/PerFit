@@ -7,7 +7,7 @@
 ########################################################################################
 
 Gpoly <- function(matrix, Ncat,
-                  NA.method="NPModel", Save.MatImp=FALSE, 
+                  NA.method="Pairwise", Save.MatImp=FALSE, 
                   IP=NULL, IRT.PModel="GRM", Ability=NULL, Ability.PModel="EAP")
 {
   matrix      <- as.matrix(matrix)
@@ -20,13 +20,13 @@ Gpoly <- function(matrix, Ncat,
   matrix <- res.NA[[1]]
   # Perfect response vectors allowed (albeit uninformative).
   # Compute PFS:
-  probs.ISD       <- matrix(NA, nrow=I, ncol=M)
-  for (m in 1:M) {probs.ISD[,m] <- colMeans(matrix >= m)}
-  f.scoresISD     <- function (x){c(rep(1,x), rep(0,M-x))}
-  matrix.ISD      <- matrix(unlist(lapply(t(matrix), f.scoresISD)), byrow=TRUE, nrow=N)
+  probs.ISD       <- matrix(NA, nrow = I, ncol = M)
+  for (m in 1:M) {probs.ISD[, m] <- colMeans(matrix >= m, na.rm = TRUE)}
+  f.scoresISD    <- function (x) {if (is.na(x)) {rep(NA, M)} else {c(rep(1, x), rep(0, M - x))}}
+  matrix.ISD      <- matrix(unlist(lapply(t(matrix), f.scoresISD)), byrow = TRUE, nrow = N)
   probs.ISD.vect  <- as.vector(t(probs.ISD))
-  matrix.ISD.ord  <- matrix.ISD[,order(probs.ISD.vect, decreasing=TRUE)]
-  res             <- G(matrix.ISD.ord)$PFscores[,1]
+  matrix.ISD.ord  <- matrix.ISD[, order(probs.ISD.vect, decreasing = TRUE)]
+  res             <- G(matrix.ISD.ord)$PFscores[, 1]
   # Export results:
   export.res.NP(matrix, N, res, "Gpoly", vector("list", 5) , Ncat=Ncat, NA.method, 
                IRT.PModel, res.NA[[2]], Ability.PModel, res.NA[[3]], IP.NA, Ability.NA, res.NA[[4]])

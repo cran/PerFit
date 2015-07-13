@@ -6,19 +6,19 @@
 
 \usage{
 U3(matrix,
-   NA.method = "NPModel", Save.MatImp = FALSE, 
+   NA.method = "Pairwise", Save.MatImp = FALSE, 
    IP = NULL, IRT.PModel = "2PL", Ability = NULL, Ability.PModel = "ML",
    mu = 0, sigma = 1)
 
 ZU3(matrix,
-    NA.method = "NPModel", Save.MatImp = FALSE, 
+    NA.method = "Pairwise", Save.MatImp = FALSE, 
     IP = NULL, IRT.PModel = "2PL", Ability = NULL, Ability.PModel = "ML",
     mu = 0, sigma = 1)
 }
 
 \arguments{
   \item{matrix}{Data matrix of dichotomous item scores: Persons as rows, items as columns, item scores are either 0 or 1, missing values allowed.}
-  \item{NA.method}{Simple imputation method to use in case missing values exist. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
+  \item{NA.method}{Method to deal with missing values. The default is pairwise elimination (\code{"Pairwise"}). Alternatively, simple imputation methods are also available. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
   \item{Save.MatImp}{Logical. Save (imputted) data matrix to file? Default is FALSE.}
   \item{IP}{Matrix with previously estimated item parameters: One row per item, and three columns ([,1] item discrimination; [,2] item difficulty; [,3] lower-asymptote, also referred to as pseudo-guessing parameter).
   
@@ -41,7 +41,7 @@ U3 varies from 0 for perfect Guttman response vectors (i.e., with only the easie
 
 U3 scores are dependent on the number-correct score, hence van der Flier proposed ZU3 as a standardization (formulas to compute E(U3) and Var(U3) can be found in van der Flier, 1982). ZU3 is supposed to be asymptotically approximated by the standard normal distribution, but this approximation is not without problems (see Emons, Meijer, and Sijtsma, 2002).
 
-Missing values in \code{matrix} are imputed by one of three single imputation methods: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
+Missing values in \code{matrix} are dealt with by means of pairwise elimination by default. Alternatively, single imputation is also available. Three single imputation methods exist: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
 \itemize{
 \item Hotdeck imputation replaces missing responses of an examinee ('recipient') by item scores from the examinee which is closest to the recipient ('donor'), based on the recipient's nonmissing item scores. The similarity between nonmissing item scores of recipients and donors is based on the sum of absolute differences between the corresponding item scores. The donor's response pattern is deemed to be the most similar to the recipient's response pattern in the group, so item scores of the former are used to replace the corresponding missing values of the latter. When multiple donors are equidistant to a recipient, one donor is randomly drawn from the set of all donors.
 \item The nonparametric model imputation method is similar to the hotdeck imputation, but item scores are generated from Bernoulli distributions with probabilities defined by donors with similar total score than the recipient (based on all items except the NAs).

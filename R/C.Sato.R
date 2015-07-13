@@ -4,7 +4,7 @@
 ########################################################################################
 ########################################################################################
 C.Sato <- function(matrix, 
-                   NA.method="NPModel", Save.MatImp=FALSE, 
+                   NA.method="Pairwise", Save.MatImp=FALSE, 
                    IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -23,12 +23,17 @@ C.Sato <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi             <- colMeans(matrix.sv)
-  pi.ord         <- sort(pi, decreasing=TRUE)
-  matrix.ord     <- matrix[, order(pi, decreasing=TRUE)]
-  num            <- cov(t(matrix.ord), pi.ord)
-  matrix.easiest <- (col(matrix) <= NC) * 1
-  den            <- cov(t(matrix.easiest), pi.ord)
+  pi             <- colMeans(matrix.sv, na.rm = TRUE)
+  pi.ord         <- sort(pi, decreasing = TRUE)
+  matrix.ord     <- matrix[, order(pi, decreasing = TRUE)]
+  num            <- cov(t(matrix.ord), pi.ord, use = "pairwise.complete.obs")
+  matrix.easiest <- t(apply(matrix.ord, 1, function(vec) 
+    {tmp                     <- sum(vec, na.rm = TRUE)
+     vec[!is.na(vec)]        <- 0
+     vec[!is.na(vec)][1:tmp] <- 1
+     return(vec)
+     }))
+  den            <- cov(t(matrix.easiest), pi.ord, use = "pairwise.complete.obs")
   res.red        <- as.vector(1 - num / den)
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)

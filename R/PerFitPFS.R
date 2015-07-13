@@ -1,8 +1,8 @@
 PerFit.PFS <- function(matrix, method=NULL, simplified=TRUE, 
-                   NA.method="NPModel", Save.MatImp=FALSE, 
+                   NA.method="Pairwise", Save.MatImp=FALSE, 
                    IP=NULL, IRT.PModel=NULL, Ability=NULL, Ability.PModel=NULL, mu=0, sigma=1)
 {
-  matrix      <- as.matrix(matrix)
+  matrix   <- as.matrix(matrix)
   N        <- dim(matrix)[1]; I <- dim(matrix)[2];
   dico.PFS <- c("Cstar", "C.Sato", "U3", "ZU3", "G", "Gnormed", "D.KB", "r.pbis", "NCI", "Ht", "A.KB", "E.KB", "lz", "lzstar")
   poly.PFS <- c("Gpoly", "Gnormed.poly", "U3poly", "lzpoly")
@@ -77,12 +77,12 @@ PerFit.PFS <- function(matrix, method=NULL, simplified=TRUE,
   if (simplified == TRUE)
   {
     rownames.bckp <- rownames(res[[1]]$PFscores)
-    res           <- data.frame(matrix(unlist(lapply(res, function(lst) {lst[[1]]})), nrow=N))
+    res           <- data.frame(matrix(unlist(lapply(res, function(lst) {lst[[1]]})), nrow = N))
     colnames(res) <- method
     rownames(res) <- rownames.bckp
   }
   
-  res
+  return(res)
 }
 
 

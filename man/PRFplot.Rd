@@ -6,7 +6,7 @@
 PRFplot(matrix, respID, h=.09, N.FPts=101, 
         VarBands=FALSE, VarBands.area=FALSE, alpha=.05,
         Xlabel=NA, Xcex=1.5, Ylabel=NA, Ycex=1.5, title=NA, Tcex=1.5,
-        NA.method="NPModel", Save.MatImp=FALSE, 
+        NA.method="Pairwise", Save.MatImp=FALSE, 
         IP = NULL, IRT.PModel = "2PL", Ability = NULL, Ability.PModel = "ML",
         mu = 0, sigma = 1, 
         message = TRUE)
@@ -26,7 +26,7 @@ PRFplot(matrix, respID, h=.09, N.FPts=101,
   \item{Ycex}{Font size of the label of y-axis.}
   \item{title}{Define the title of the plot, otherwise a default title is shown.}
   \item{Tcex}{Font size of the title of the plot.}
-  \item{NA.method}{Simple imputation method to use in case missing values exist. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
+  \item{NA.method}{Method to deal with missing values. The default is pairwise elimination (\code{"Pairwise"}). Alternatively, simple imputation methods are also available. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
   \item{Save.MatImp}{Logical. Save (imputted) data matrix to file? Default is FALSE.}
   \item{IP}{Matrix with previously estimated item parameters: One row per item, and three columns ([,1] item discrimination; [,2] item difficulty; [,3] lower-asymptote, also referred to as pseudo-guessing parameter).
   
@@ -52,7 +52,7 @@ The PRFs and variability bands for each respondent are approximated by means of 
 \item Specify coefficients c for the B-splines basis system computed above and then create functional data objects. Based on smoothing using regression analysis (Ramsay et al., 2009, section 4.3).
 }
 
-Missing values in \code{matrix} are imputed by one of three single imputation methods: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
+Missing values in \code{matrix} are dealt with by means of pairwise elimination by default. Alternatively, single imputation is also available. Three single imputation methods exist: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
 \itemize{
 \item Hotdeck imputation replaces missing responses of an examinee ('recipient') by item scores from the examinee which is closest to the recipient ('donor'), based on the recipient's nonmissing item scores. The similarity between nonmissing item scores of recipients and donors is based on the sum of absolute differences between the corresponding item scores. The donor's response pattern is deemed to be the most similar to the recipient's response pattern in the group, so item scores of the former are used to replace the corresponding missing values of the latter. When multiple donors are equidistant to a recipient, one donor is randomly drawn from the set of all donors.
 \item The nonparametric model imputation method is similar to the hotdeck imputation, but item scores are generated from Bernoulli distributions with probabilities defined by donors with similar total score than the recipient (based on all items except the NAs).
@@ -98,7 +98,7 @@ Ht.flagged <- Ht.flagged$PFSscores[,1]
 # Plot the PRFs of the first three flagged respondents:
 Flagged    <- PRFplot(InadequacyData, respID=Ht.flagged[1:3])
 # Plot the person response function of respondent 35 (not flagged as aberrant):
-NotFlagged <- PRFplot(InadequacyData, respID=35)
+PRFplot(InadequacyData, respID=35)
 # Plot the PRFs of all respondents:
 plot(Flagged$PRF.FDO)
 }

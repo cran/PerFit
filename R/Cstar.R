@@ -4,7 +4,7 @@
 ########################################################################################
 ########################################################################################
 Cstar <- function(matrix, 
-                  NA.method="NPModel", Save.MatImp=FALSE, 
+                  NA.method="Pairwise", Save.MatImp=FALSE, 
                   IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -23,12 +23,22 @@ Cstar <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi          <- colMeans(matrix.sv)
-  pi.ord      <- sort(pi, decreasing=TRUE)
-  sum.firstpi <- cumsum(pi.ord)[NC]
-  pi.ordrev   <- sort(pi, decreasing=FALSE)
-  sum.lastpi  <- cumsum(pi.ordrev)[NC]
-  res.red     <- as.vector((sum.firstpi - as.vector(matrix %*% pi)) / (sum.firstpi - sum.lastpi))
+  pi          <- colMeans(matrix.sv, na.rm = TRUE)
+  pi.ord      <- sort(pi, decreasing = TRUE)
+  sum.firstpi <- apply(matrix, 1, function(vec)
+  {
+    NA.vec <- sum(vec, na.rm = TRUE)
+    sum(pi.ord[!is.na(vec)][1:NA.vec])
+  })  
+  pi.ordrev   <- sort(pi, decreasing = FALSE)
+  sum.lastpi <- apply(matrix, 1, function(vec)
+  {
+    NA.vec <- sum(vec, na.rm = TRUE)
+    sum(pi.ordrev[!is.na(vec)][1:NA.vec])
+  })
+  matrix.NAs.0 <- matrix
+  matrix.NAs.0[is.na(matrix.NAs.0)] <- 0
+  res.red      <- as.vector((sum.firstpi - as.vector(matrix.NAs.0 %*% pi)) / (sum.firstpi - sum.lastpi))
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)
   # Export results:

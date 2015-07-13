@@ -31,78 +31,78 @@ plot.PerFit <- function (x, #x = an object from 'PerFit' class
   # 
   x.line       <- cutoff.res$Cutoff
   perc.flagged <- round(100 * cutoff.res$Prop.flagged, 2)
-  direction    <- paste(", ",cutoff.res$Tail," ",sep="")
+  direction    <- paste(", ", cutoff.res$Tail, " ", sep = "")
   # 
-  PFS.flagged  <- flagged.resp(x, cutoff.res, scores=FALSE)[[1]][,2]
+  PFS.flagged  <- flagged.resp(x, cutoff.res, scores = FALSE)[[1]][,2]
   # Find correct scale for y-axis:
-  ymax.hist    <- max(hist(pf.scores.noNAs, plot=FALSE)$density)
+  ymax.hist    <- max(hist(pf.scores.noNAs, plot = FALSE)$density)
   ymax.dens    <- max(density(pf.scores.noNAs)$y)
   ymax         <- switch(Type,
                          Density   = ymax.dens,
                          Histogram = ymax.hist,
                          Both      = if (Both.scale == TRUE) {max(ymax.dens,ymax.hist)} else {min(ymax.dens,ymax.hist)})
   par(mar=c(4,3.5,2,1)+.1,las=1)
-  hist(pf.scores.noNAs,freq=FALSE,border="white",ann=FALSE,ylim=c(0,ymax))
+  hist(pf.scores.noNAs, freq = FALSE, border = "white", ann = FALSE, ylim = c(0, ymax))
   #
   if (Cutoff == TRUE)
   {
     if (any(x$PFStatistic == upp.PFS))
     {
-      rect(x.line,0,par("usr")[2], par("usr")[4],col=col.area,border=NA)
+      rect(x.line, 0, par("usr")[2], par("usr")[4],col = col.area, border = NA)
     }
     if (any(x$PFStatistic == low.PFS))
     {
-      rect(par("usr")[1],0, x.line,par("usr")[4],col=col.area,border=NA)
+      rect(par("usr")[1], 0, x.line, par("usr")[4], col = col.area, border = NA)
     }
   }
   #
   if (Type == "Histogram")
   {
-    par(new=TRUE)
-    hist(pf.scores.noNAs,freq=FALSE,col=col.hist,ann=FALSE,ylim=c(0,ymax))
+    par(new = TRUE)
+    hist(pf.scores.noNAs, freq = FALSE, col = col.hist, ann = FALSE, ylim = c(0, ymax))
   }
   #
   if (Type == "Density")
   {
-    points(density(pf.scores.noNAs),type="l",lwd=2,ann=FALSE,ylim=c(0,ymax))
+    points(density(pf.scores.noNAs), type = "l", lwd = 2, ann = FALSE, ylim = c(0, ymax))
   }
   #
   if (Type == "Both")
   {
     par(new=TRUE)
-    hist(pf.scores.noNAs,freq=FALSE,col=col.hist,ann=FALSE,ylim=c(0,ymax))
-    points(density(pf.scores.noNAs),type="l",lwd=2,ann=FALSE,ylim=c(0,ymax))
+    hist(pf.scores.noNAs, freq = FALSE, col = col.hist, ann = FALSE, ylim = c(0,ymax))
+    points(density(pf.scores.noNAs), type = "l",lwd = 2,ann = FALSE,ylim = c(0,ymax))
   }
   box(col="black")
   #
   if (Cutoff == FALSE)
   {
     tmp <- if (is.na(Xlabel)) {x$PFStatistic} else {Xlabel}
-    mtext(side=1,text=tmp,line=2.5,col="black",cex=1.5,font=1)
+    mtext(side = 1, text = tmp, line = 2.5, col = "black", cex = 1.5, font = 1)
   }
   # Add flagged respondents:
   if (Flagged.ticks == TRUE)
   {
-    axis(3, at=PFS.flagged, labels=FALSE, tick=TRUE, lwd.ticks=2, col.ticks=col.ticks)
+    axis(3, at = PFS.flagged, labels = FALSE, tick = TRUE, lwd.ticks = 2, col.ticks = col.ticks)
   }
   # Add bootstrap CIlvl% CI to x-axis:
   if (Cutoff.int == TRUE)
   {
-    segments(x0=cutoff.res$Cutoff.CI[1], y0=par("usr")[3], 
-             x1=cutoff.res$Cutoff.CI[2], y1=par("usr")[3], lwd=6, col=col.int, xpd=TRUE)
+    segments(x0 = cutoff.res$Cutoff.CI[1], y0 = par("usr")[3], 
+             x1 = cutoff.res$Cutoff.CI[2], y1 = par("usr")[3], lwd = 6, col = col.int, xpd = TRUE)
   }
   # 
   if (Cutoff == TRUE)
   {
-    abline(v=x.line,lwd=2)
+    abline(v = x.line, lwd = 2)
     tmp <- if (is.na(Xlabel))
     {
-      paste(x$PFStatistic," (cutoff=",round(x.line,3),direction,perc.flagged,"%)",sep="")
+      paste(x$PFStatistic, " (cutoff = ",round(x.line,3),direction,perc.flagged,"%)", sep = "")
     } else 
     {
       Xlabel
     }
-    mtext(side=1,text=tmp,line=2.5,col="black",cex=Xcex,font=1) 
+    mtext(side = 1, text = tmp, line = 2.5, col = "black", cex = Xcex, font = 1) 
   }
   #
   tmp <- if (is.na(title))
@@ -112,5 +112,5 @@ plot.PerFit <- function (x, #x = an object from 'PerFit' class
   {
     title
   }
-  mtext(side=3,text=tmp,line=.5,col="black",cex=Tcex,font=2)
+  mtext(side = 3, text = tmp, line = .5, col = "black", cex = Tcex, font = 2)
 }

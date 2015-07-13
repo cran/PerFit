@@ -4,7 +4,7 @@
 ########################################################################################
 ########################################################################################
 A.KB <- function(matrix, 
-                 NA.method="NPModel", Save.MatImp=FALSE, 
+                 NA.method="Pairwise", Save.MatImp=FALSE, 
                  IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -23,8 +23,10 @@ A.KB <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi        <- colMeans(matrix)
-  res.red   <- as.vector(matrix %*% pi)
+  pi           <- colMeans(matrix.sv, na.rm = TRUE)
+  matrix.NAs.0 <- matrix
+  matrix.NAs.0[is.na(matrix.NAs.0)] <- 0
+  res.red   <- as.vector(matrix.NAs.0 %*% pi)
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)
   # Export results:
@@ -33,7 +35,7 @@ A.KB <- function(matrix,
 }
 
 D.KB <- function(matrix, 
-                 NA.method="NPModel", Save.MatImp=FALSE, 
+                 NA.method="Pairwise", Save.MatImp=FALSE, 
                  IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -52,10 +54,19 @@ D.KB <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi      <- colMeans(matrix)
-  pi.ord  <- sort(pi, decreasing=TRUE)
-  a       <- matrix %*% pi
-  a.max   <- cumsum(pi.ord)[NC]
+  pi           <- colMeans(matrix.sv, na.rm = TRUE)
+  pi.ord       <- sort(pi, decreasing = TRUE)
+  matrix.NAs.0 <- matrix
+  matrix.NAs.0[is.na(matrix.NAs.0)] <- 0
+  a       <- matrix.NAs.0 %*% pi
+  N.red   <- dim(matrix)[1]
+  a.max   <- if (sum(is.na(matrix)) > 0)
+  {
+    unlist(lapply(1:N.red, function(i) {cumsum(pi.ord[!is.na(matrix[i, ])])[NC[i]]}))
+  } else 
+  {
+    cumsum(pi.ord)[NC]
+  }
   res.red <- as.vector(a.max - a)
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)
@@ -65,7 +76,7 @@ D.KB <- function(matrix,
 }
 
 E.KB <- function(matrix, 
-                 NA.method="NPModel", Save.MatImp=FALSE, 
+                 NA.method="Pairwise", Save.MatImp=FALSE, 
                  IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -84,10 +95,19 @@ E.KB <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi      <- colMeans(matrix)
-  pi.ord  <- sort(pi,decreasing=TRUE)
-  a       <- matrix %*% pi
-  a.max   <- cumsum(pi.ord)[NC]
+  pi           <- colMeans(matrix.sv, na.rm = TRUE)
+  pi.ord       <- sort(pi, decreasing=TRUE)
+  matrix.NAs.0 <- matrix
+  matrix.NAs.0[is.na(matrix.NAs.0)] <- 0
+  a       <- matrix.NAs.0 %*% pi
+  N.red   <- dim(matrix)[1]
+  a.max   <- if (sum(is.na(matrix)) > 0)
+  {
+    unlist(lapply(1:N.red, function(i) {cumsum(pi.ord[!is.na(matrix[i, ])])[NC[i]]}))
+  } else 
+  {
+    cumsum(pi.ord)[NC]
+  }
   res.red <- as.vector(a / a.max)
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)

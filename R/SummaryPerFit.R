@@ -22,7 +22,7 @@ summary.PerFit <- function(object, #object = an object from 'PerFit' class
   }
   
   # Compute flagged:
-  flagged.res <- flagged.resp(x, cutoff.res, scores=FALSE)$PFSscores[,1]
+  flagged.res <- flagged.resp(x, cutoff.res, scores = FALSE)$PFSscores[, 1]
   
   # Summarize results:
   cat(paste0("\nPFS = ", x$PFStatistic, "\n"))

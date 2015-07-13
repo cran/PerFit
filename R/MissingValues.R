@@ -1,4 +1,4 @@
-# Dealing with missing values:
+# MissingValues(): Dealing with missing values ----
 MissingValues <- function(matrix, NAs, Save.MatImp, IP, ParModel, Ability, Method, mu, sigma)
 {
   N <- dim(matrix)[1]; I <- dim(matrix)[2]
@@ -6,6 +6,7 @@ MissingValues <- function(matrix, NAs, Save.MatImp, IP, ParModel, Ability, Metho
   {
     lst <- switch(
       NAs,
+      Pairwise = list(matrix, IP, Ability, 1),
       Hotdeck = HD.imputation(matrix, Save.MatImp, IP, Ability),
       NPModel = NPModel.imputation(matrix, Save.MatImp, IP, Ability),
       PModel  = {
@@ -26,10 +27,10 @@ MissingValues <- function(matrix, NAs, Save.MatImp, IP, ParModel, Ability, Metho
     }
     lst <- list(matrix, IP, Ability, 0)
   }
-  lst
+  return(lst)
 }
 
-# Dealing with missing values (polytomous):
+# MissingValues.poly(): Dealing with missing values (polytomous) ----
 MissingValues.poly <- function(matrix, Ncat, NAs, Save.MatImp, IP, ParModel, Ability, Method)
 {
   N <- dim(matrix)[1]; I <- dim(matrix)[2]
@@ -37,6 +38,7 @@ MissingValues.poly <- function(matrix, Ncat, NAs, Save.MatImp, IP, ParModel, Abi
   {
     lst <- switch(
       NAs,
+      Pairwise = list(matrix, IP, Ability, 1),
       Hotdeck = HD.imputation(matrix, Save.MatImp, IP, Ability),
       NPModel = NPModel.imputation.poly(matrix, Ncat, Save.MatImp, IP, Ability),
       PModel  = {

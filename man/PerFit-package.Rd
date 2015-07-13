@@ -8,8 +8,8 @@
 \tabular{ll}{
 Package: \tab PerFit\cr
 Type: \tab Package\cr
-Version: \tab 1.3.1\cr
-Date: \tab 2015-03-16\cr
+Version: \tab 1.4\cr
+Date: \tab 2015-07-13\cr
 License: \tab GPL Version 2 or later\cr
 }
 The \pkg{PerFit} package contains several person-fit functions. The goal is to detect response vectors that seem to be strange in terms of the sample of respondents or in terms to an item response theory (IRT) model.
@@ -68,6 +68,13 @@ The package underwent a major revision:
 \item Standard errors for the person-fit statistics are now available (see function \code{PerFit.SE}).
 \item Many control checks were added throughout the entire code.
 }
+\item Version 1.4 (July 2015)
+
+\itemize{
+\item The default missing values approach is now pairwise elimination. The imputation methods introduced with version 1.3.1 are still available.
+\item A bug was removed from function \code{lzpoly()} (many thanks to Marco Bressan for spotting it!).
+}
+
 }
 
 }

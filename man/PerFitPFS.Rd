@@ -5,7 +5,7 @@
 
 \usage{
 PerFit.PFS(matrix, method=NULL, simplified=TRUE, 
-       NA.method = "NPModel", Save.MatImp = FALSE,
+       NA.method = "Pairwise", Save.MatImp = FALSE,
        IP = NULL, IRT.PModel = NULL, Ability = NULL, Ability.PModel = NULL,
        mu = 0, sigma = 1)
 }
@@ -14,7 +14,7 @@ PerFit.PFS(matrix, method=NULL, simplified=TRUE,
   \item{matrix}{Data matrix of dichotomous item scores: Persons as rows, items as columns, item scores are either 0 or 1, missing values allowed.}
   \item{method}{Vector of person-fit statistics to be computed.}
   \item{simplified}{Logical. If FALSE, a list of \code{PerFit} objects is returned. If TRUE (default), a matrix with person-fit scores per respondent (one column per statistic) is reported.}
-  \item{NA.method}{Simple imputation method to use in case missing values exist. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
+  \item{NA.method}{Method to deal with missing values. The default is pairwise elimination (\code{"Pairwise"}). Alternatively, simple imputation methods are also available. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
   \item{Save.MatImp}{Logical. Save (imputted) data matrix to file? Default is FALSE.}
   \item{IP}{Matrix with previously estimated item parameters: One row per item, and three columns ([,1] item discrimination; [,2] item difficulty; [,3] lower-asymptote, also referred to as pseudo-guessing parameter).
   

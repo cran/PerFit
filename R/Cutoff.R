@@ -43,11 +43,11 @@ cutoff <- function(x, #x = an object from 'PerFit' class
     }
     Ability <- estAb(x$Matrix, IP, Ability, Ability.PModel, mu, sigma)
     #
-    Ability.gen <- sample(Ability, size=Nreps, replace=TRUE)
+    Ability.gen <- sample(Ability[!is.na(Ability)], size = Nreps, replace = TRUE)
     #
-    A   <- IP[,1]; B <- IP[,2]; C <- IP[,3]
-    P                   <- do.call(cbind, lapply(1:I,function (x) {C[x]+(1-C[x]) / (1+exp(-A[x]*(Ability.gen - B[x])))}))
-    matrix.modelfitting <- matrix(rbinom(length(P), 1, P), ncol=I)
+    A   <- IP[, 1]; B <- IP[, 2]; C <- IP[, 3]
+    P                   <- do.call(cbind, lapply(1:I, function (x) {C[x] + (1-C[x]) / (1 + exp(-A[x] * (Ability.gen - B[x])))}))
+    matrix.modelfitting <- matrix(rbinom(length(P), 1, P), ncol = I)
     # Compute PFS values on the model-fitting item response vectors:
     if (any(x$PFStatistic == perfectNotAllowed.PFS))
     {
@@ -84,20 +84,20 @@ cutoff <- function(x, #x = an object from 'PerFit' class
     }
     Ability <- estAb.poly(x$Matrix, IP.ltm, Ability, Ability.PModel)
     #
-    Ability.gen <- sample(Ability, size=Nreps, replace=TRUE)
+    Ability.gen <- sample(Ability[!is.na(Ability)], size = Nreps, replace = TRUE)
     #
     P.CRF               <- estP.CRF(I, Ncat, IRT.PModel, IP, Ability.gen)
-    P.CRF.ind           <- matrix(1:(Ncat*I), nrow=Ncat)
-    matrix.modelfitting <- matrix(,nrow=Nreps, ncol=I)
+    P.CRF.ind           <- matrix(1:(Ncat * I), nrow = Ncat)
+    matrix.modelfitting <- matrix(, nrow = Nreps, ncol = I)
     for (i in 1:I)
     {
-      matrix.modelfitting[,i] <- rMultinom(P.CRF[,((i-1)*Ncat + 1) : (i*Ncat)],1) - 1
+      matrix.modelfitting[, i] <- rMultinom(P.CRF[, ((i - 1) * Ncat + 1) : (i * Ncat)], 1) - 1
     }
     # Compute PFS values on the model-fitting item response vectors:
     if (any(x$PFStatistic == perfectNotAllowed.PFS))
     {
       nonperfectvects.mf <- (rowSums(matrix.modelfitting) %% I) != 0
-      PFS.modelfitting <- eval(parse(text = x[[2]]))(matrix.modelfitting[nonperfectvects.mf,], Ncat)$PFscores[[1]]
+      PFS.modelfitting <- eval(parse(text = x[[2]]))(matrix.modelfitting[nonperfectvects.mf, ], Ncat)$PFscores[[1]]
     } else
     {
       PFS.modelfitting <- eval(parse(text = x[[2]]))(matrix.modelfitting, Ncat)$PFscores[[1]]
@@ -107,18 +107,18 @@ cutoff <- function(x, #x = an object from 'PerFit' class
   # 
   if (ModelFit == "NonParametric" & any(x$PFStatistic == dico.PFS))
   {
-    NC <- rowSums(x$Matrix)
+    NC <- rowSums(x$Matrix, na.rm = TRUE)
     # 
-    NC.gen <- sample(NC[!PFS.NA], size=Nreps, replace=TRUE)
+    NC.gen <- sample(NC[!PFS.NA], size = Nreps, replace = TRUE)
     #
     uniqueNC            <- sort(unique(NC.gen))
-    matrix.modelfitting <- matrix(, nrow=Nreps, ncol=I)
+    matrix.modelfitting <- matrix(, nrow = Nreps, ncol = I)
     # 
     for (i in 1:length(uniqueNC))
     {
       NC.i <- which(NC.gen == uniqueNC[i])
-      pi.i <- colMeans(x$Matrix[NC == uniqueNC[i],,drop=FALSE])
-      matrix.modelfitting[NC.i, ] <- rbinom(length(NC.i)*I, 1, rep(pi.i, each=length(NC.i)))
+      pi.i <- colMeans(x$Matrix[NC == uniqueNC[i], , drop = FALSE], na.rm = TRUE)
+      matrix.modelfitting[NC.i, ] <- rbinom(length(NC.i) * I, 1, rep(pi.i, each = length(NC.i)))
     }
     # Compute PFS values on the model-fitting item response vectors:
     if (any(x$PFStatistic == perfectNotAllowed.PFS))
@@ -134,12 +134,12 @@ cutoff <- function(x, #x = an object from 'PerFit' class
   # 
   if (ModelFit == "NonParametric" & any(x$PFStatistic == poly.PFS))
   {
-    NC <- rowSums(x$Matrix)
+    NC <- rowSums(x$Matrix, na.rm = TRUE)
     # 
-    NC.gen <- sample(NC[!PFS.NA], size=Nreps, replace=TRUE)
+    NC.gen <- sample(NC[!PFS.NA], size = Nreps, replace = TRUE)
     #
     uniqueNC            <- sort(unique(NC.gen))
-    matrix.modelfitting <- matrix(, nrow=Nreps, ncol=I)
+    matrix.modelfitting <- matrix(, nrow = Nreps, ncol = I)
     # 
     for (i in 1:length(uniqueNC))
     {
@@ -206,5 +206,5 @@ cutoff <- function(x, #x = an object from 'PerFit' class
   res        <- list(Cutoff=as.numeric(cutoff.use), Cutoff.SE=cutoff.SE, Prop.flagged=prop.flagged, Tail=tail, 
                      Cutoff.CI=cutoff.CI)
   class(res) <- "PerFit.cutoff"
-  res
+  return(res)
 }

@@ -4,7 +4,7 @@
 ########################################################################################
 ########################################################################################
 r.pbis <- function(matrix, 
-                   NA.method="NPModel", Save.MatImp=FALSE, 
+                   NA.method="Pairwise", Save.MatImp=FALSE, 
                    IP=NULL, IRT.PModel="2PL", Ability=NULL, Ability.PModel="ML", mu=0, sigma=1)
 {
   matrix      <- as.matrix(matrix)
@@ -23,8 +23,9 @@ r.pbis <- function(matrix,
   matrix.sv <- matrix
   matrix    <- part.res$matrix.red
   # Compute PFS:
-  pi      <- colMeans(matrix.sv)
-  res.red <- as.vector(cor(t(matrix), pi))
+  pi        <- colMeans(matrix.sv, na.rm = TRUE)
+  N.red     <- dim(matrix)[1]
+  res.red   <- as.vector(cor(t(matrix), pi, use = "pairwise.complete.obs"))  
   # Compute final PFS vector:
   res <- final.PFS(res.red, all.0s, all.1s, N)
   # Export results:

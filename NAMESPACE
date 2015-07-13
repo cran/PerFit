@@ -29,6 +29,8 @@ importFrom(ltm,gpcm,grm,factor.scores)
 importFrom(MASS,write.matrix)
 importFrom(Matrix,bdiag)
 importFrom(mirt,mirt)
+importFrom(stats,coef,cor,cov,density,dnorm,median,qnorm,quantile,rbinom,rmultinom,sd)
+importFrom(graphics,abline,axis,box,hist,mtext,par,plot,points,polygon,rect,segments)
 
 S3method(plot,PerFit)
 S3method(print,PerFit)

@@ -1,4 +1,4 @@
-# Sanity check - Data matrix adequacy: ----
+# Sanity.dma(): Sanity check - Data matrix adequacy ----
 Sanity.dma <- function(matrix, N, I)
 {
   if (!is.numeric(matrix) | (sum(matrix == 0 | matrix == 1, na.rm=TRUE) != (N*I - sum(is.na(matrix)))))
@@ -7,7 +7,7 @@ Sanity.dma <- function(matrix, N, I)
   }
 }
 
-# Sanity check - Data matrix adequacy (polytomous): ----
+# Sanity.dma.poly(): Sanity check - Data matrix adequacy (polytomous) ----
 Sanity.dma.poly <- function(matrix, N, I, M)
 {
   if (!is.numeric(matrix) | 
@@ -18,22 +18,20 @@ Sanity.dma.poly <- function(matrix, N, I, M)
   }
 }
 
-# Sanity check - Perfect response vectors: ----
+# sanity.prv(): Sanity check - Perfect response vectors ----
 Sanity.prv <- function(matrix, N, I)
 {
-  NC       <- rowSums(matrix)
-  uniqueNC <- sort(unique(NC))
-  all.0s   <- vector(mode="numeric", length=0)
-  all.1s   <- vector(mode="numeric", length=0)
+  NC         <- rowSums(matrix, na.rm = TRUE)
+  NC.withNAs <- NC + rowSums(is.na(matrix))
+  all.0s     <- vector(mode = "numeric", length = 0)
+  all.1s     <- vector(mode = "numeric", length = 0)
   perfect.vectors <- NULL
-  if (min(uniqueNC)==0 | max(uniqueNC)==I)
+  if (min(NC)==0 | max(NC.withNAs)==I)
   {
     perfect.vectors <- noquote("Not all item response vectors were included in the analysis (all-0s and/or all-1s patterns removed).")
     all.0s  <- which(NC == 0)
-    all.1s  <- which(NC == I)
+    all.1s  <- which((NC > 0) & (NC.withNAs == I))
     NC      <- NC[-c(all.0s, all.1s)]
-    if (length(all.0s) > 0) {uniqueNC <- uniqueNC[-1]}
-    if (length(all.1s) > 0) {uniqueNC <- uniqueNC[-length(uniqueNC)]}
   } else
   {
     perfect.vectors <- noquote("All item response vectors were included in the analysis.")
@@ -46,10 +44,10 @@ Sanity.prv <- function(matrix, N, I)
   {
     matrix.red <- matrix[(1:N)[-c(all.0s, all.1s)],]
   }
-  list(perfect.vectors=perfect.vectors, all.0s=all.0s, all.1s=all.1s, NC=NC, matrix.red=matrix.red)
+  return(list(perfect.vectors=perfect.vectors, all.0s=all.0s, all.1s=all.1s, NC=NC, matrix.red=matrix.red))
 }
 
-# Sanity check - IP matrix adequacy:----
+# Sanity.IPa(): Sanity check - IP matrix adequacy ----
 Sanity.IPa <- function(ip, I)
 {
   if (!is.numeric(ip) | dim(ip)[1] != I | dim(ip)[2] != 3)
@@ -60,7 +58,7 @@ Sanity.IPa <- function(ip, I)
   }
 }
 
-# Sanity check - IP matrix adequacy (polytomous):----
+# Sanity.IPa.poly(): Sanity check - IP matrix adequacy (polytomous) ----
 Sanity.IPa.poly <- function(IP, I, Ncat)
 {
   if (!is.numeric(IP) | dim(IP)[1] != I | dim(IP)[2] != Ncat)
@@ -73,7 +71,7 @@ Sanity.IPa.poly <- function(IP, I, Ncat)
   }
 }
 
-# Sanity check - Ability matrix adequacy:----
+# Sanity.ABa(): Sanity check - Ability matrix adequacy ----
 Sanity.ABa <- function(Ability, N)
 {
   if (!is.numeric(Ability) | length(Ability) != N)
@@ -84,7 +82,7 @@ Sanity.ABa <- function(Ability, N)
   }
 }
 
-# Sanity check - IP model:----
+# Sanity.IPm(): Sanity check - IP model ----
 Sanity.IPm <- function(model)
 {
   if (!(model %in% c("1PL", "2PL", "3PL")))
@@ -93,7 +91,7 @@ Sanity.IPm <- function(model)
   }
 }
 
-# Sanity check - IP model (polytomous):----
+# Sanity.IPm.poly(): Sanity check - IP model (polytomous) ----
 Sanity.IPm.poly <- function(model)
 {
   if (!(model %in% c("PCM", "GPCM", "GRM")))
@@ -102,7 +100,7 @@ Sanity.IPm.poly <- function(model)
   }
 }
 
-# Sanity check - Ability method:----
+# Sanity.Abm(): Sanity check - Ability method ----
 Sanity.Abm <- function(method)
 {
   if (!(method %in% c("ML", "BM", "WL")))
@@ -111,7 +109,7 @@ Sanity.Abm <- function(method)
   }
 }
 
-# Sanity check - Ability method (polytomous):----
+# Sanity.Abm.poly(): Sanity check - Ability method (polytomous) ----
 Sanity.Abm.poly <- function(method)
 {
   if (!(method %in% c("EB", "EAP", "MI")))
@@ -120,7 +118,7 @@ Sanity.Abm.poly <- function(method)
   }
 }
 
-# Sanity check - Class PerFit:----
+# Sanity.cls(): Sanity check - Class PerFit ----
 Sanity.cls <- function(x)
 {
   if (class(x) != "PerFit")
@@ -129,7 +127,7 @@ Sanity.cls <- function(x)
   }
 }
 
-# Sanity check - Class PerFit.object:----
+# Sanity.clsPO(): Sanity check - Class PerFit.object ----
 Sanity.clsPO <- function(x)
 {
   if (class(x) != "PerFit.cutoff")

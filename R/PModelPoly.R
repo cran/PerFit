@@ -5,7 +5,7 @@ PModel.imputation.poly <- function(matrix, Ncat, save.matImp, ip, model, ability
 {
   N <- dim(matrix)[1]; I <- dim(matrix)[2]
   # 
-  matrix2 <- data.frame(apply(matrix,2,as.factor)) # eliminates item levels with no answers
+  matrix2 <- data.frame(apply(matrix, 2, as.factor)) # eliminates item levels with no answers
   
   # Estimate item parameters if not provided (polytomous):
   ip.res <- estIP.poly(matrix, Ncat, ip, model)
@@ -26,15 +26,15 @@ PModel.imputation.poly <- function(matrix, Ncat, save.matImp, ip, model, ability
   {
     resp <- resp.NA[i]
     position.NA <- (1:I)[position.NA.mat[resp, ]]
-    P.CRF.ind   <- sapply(position.NA,function(x){((x-1)*Ncat+1):(x*Ncat)})
-    P.CRF.NA    <- matrix(P.CRF[resp, P.CRF.ind], ncol=length(position.NA))
+    P.CRF.ind   <- sapply(position.NA,function(x){((x - 1) * Ncat + 1):(x * Ncat)})
+    P.CRF.NA    <- matrix(P.CRF[resp, P.CRF.ind], ncol = length(position.NA))
     matrix.imp[resp, position.NA] <- 
-      which(apply(P.CRF.NA,2, function(vect) {rmultinom(1,1,vect)}) == 1, arr.ind=TRUE)[,1] - 1
+      which(apply(P.CRF.NA, 2, function(vect) {rmultinom(1, 1, vect)}) == 1, arr.ind = TRUE)[, 1] - 1
   }
   # 
   if (save.matImp == TRUE)
   {
     write.matrix(matrix.imp, file="Datamatrix_imputted.txt", sep=" ")
   }
-  list(matrix.imp, ip, ability, 1)
+  return(list(matrix.imp, ip, ability, 1))
 }

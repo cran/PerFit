@@ -23,36 +23,38 @@ flagged.resp <- function(x, #x = an object from 'PerFit' class
   #   
   if (any(x$PFStatistic == upp.PFS)) 
   {
-    flagged.subs <- which(x$PFscores[,1] >= cutoff.res$Cutoff)
+    flagged.subs <- which(x$PFscores[, 1] >= cutoff.res$Cutoff)
   }
   if (any(x$PFStatistic == low.PFS)) 
   {
-    flagged.subs <- which(x$PFscores[,1] <= cutoff.res$Cutoff)
+    flagged.subs <- which(x$PFscores[, 1] <= cutoff.res$Cutoff)
   }
-  Ps <- round(colMeans(x$Matrix),3)
+  Ps <- round(colMeans(x$Matrix, na.rm = TRUE), 3)
   # Not ordered by pvalue:
   if (ord == FALSE)
   {
     flagged.scores           <- x$Matrix[flagged.subs, ]
-    colnames(flagged.scores) <- paste("It", 1:dim(x$Matrix)[2], sep="")
+    colnames(flagged.scores) <- paste("It", 1:dim(x$Matrix)[2], sep = "")
   }
   # Ordered by pvalue:
   if (ord == TRUE)
   {
-    matrix.ord               <- x$Matrix[, order(Ps,decreasing=TRUE)] # ordered from easy to difficult
-    flagged.scores           <- matrix.ord[flagged.subs,]
-    colnames(flagged.scores) <- paste("It", order(Ps,decreasing=TRUE), sep="")
-    Ps                       <- sort(Ps,decreasing=TRUE)
+    matrix.ord               <- x$Matrix[, order(Ps, decreasing = TRUE)] # ordered from easy to difficult
+    flagged.scores           <- matrix.ord[flagged.subs, ]
+    colnames(flagged.scores) <- paste("It", order(Ps, decreasing = TRUE), sep = "")
+    Ps                       <- sort(Ps, decreasing = TRUE)
   }
   flagged.scores           <- as.matrix(flagged.scores)
   rownames(flagged.scores) <- NULL
   res                      <- if (scores == FALSE)
   {
-    list(PFSscores=cbind(FlaggedID=flagged.subs, PFscores=x$PFscores[flagged.subs,1]), Cutoff.lst=cutoff.res, PFS=x[[2]])
+    list(PFSscores  = cbind(FlaggedID = flagged.subs, PFscores = x$PFscores[flagged.subs, 1]), 
+         Cutoff.lst = cutoff.res, PFS = x[[2]])
   } else
   {
-    list(Scores=cbind(FlaggedID=flagged.subs, flagged.scores, PFscores=x$PFscores[flagged.subs,1]), MeanItemValue=Ps, Cutoff.lst=cutoff.res, 
-         PFS=x[[2]])
+    list(Scores = cbind(FlaggedID = flagged.subs, flagged.scores, PFscores = x$PFscores[flagged.subs, 1]), 
+         MeanItemValue = Ps, Cutoff.lst = cutoff.res, 
+         PFS = x[[2]])
   }
-  res
+  return(res)
 }

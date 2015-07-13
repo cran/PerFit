@@ -5,14 +5,14 @@
 
 \usage{
 lzpoly(matrix, Ncat, 
-       NA.method = "NPModel", Save.MatImp = FALSE,
+       NA.method = "Pairwise", Save.MatImp = FALSE,
        IP = NULL, IRT.PModel = "GRM", Ability = NULL, Ability.PModel = "EAP")
 }
 
 \arguments{
   \item{matrix}{A data matrix of polytomous item scores: Persons as rows, items as columns, item scores are integers between 0 and (Ncat-1), missing values allowed.}
   \item{Ncat}{Number of answer options for each item.}
-  \item{NA.method}{Simple imputation method to use in case missing values exist. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
+  \item{NA.method}{Method to deal with missing values. The default is pairwise elimination (\code{"Pairwise"}). Alternatively, simple imputation methods are also available. The options available are \code{"Hotdeck"}, \code{"NPModel"} (default), and \code{"PModel"}.}
   \item{Save.MatImp}{Logical. Save (imputted) data matrix to file? Default is FALSE.}
   \item{IP}{Matrix with previously estimated item parameters: One row per item. The first (Ncat-1) columns contain the between-categories threshold parameters (for the GRM) or the item step difficulties (for the PCM and the GPCM). The last, Ncat-th, column has the slopes.
   
@@ -27,11 +27,11 @@ lzpoly(matrix, Ncat,
 \details{
 Statistic \code{lzpoly} is the natural extension of \code{\link{lz}} to polytomously scores items. In this case the user can choose one from three possible IRT models to fit the data: The partial credit model (\code{IRT.PModel="PCM"}), the generalized partial credit model (\code{IRT.PModel="GPCM"}), or the graded response model (\code{IRT.PModel="GRM"}). Ability parameters can be estimated by means of one of three methods: Empirical Bayes (\code{Ability.PModel="EB"}), expected a posteriori (\code{Ability.PModel="EAP"}), or multiple imputation (\code{Ability.PModel="MI"}).
 
-Both item and ability parameters may be provided as function parameters (\code{IP} and \code{Ability}, respectively). If \code{IP} is provided then \code{Ability} must also be provided. The reason is that the estimation of the ability parameters is done via the function \code{factor.scores} from the \pkg{ltm} package, and this procedure requires an object of a specific class (\code{gpcm} or \code{grm}) containing the estimated item parameters (i.e., providing a matrix of item parameters to \code{IP} is not sufficient).
+The estimation of the model parameters is based on the \code{ltm} package. This function will estimate the item and ability parameters when both sets of parameters are missing. It will also estimate one set of parameters in case only the other set is provided. It is possible that some estimation convergence problems occur that may break the function. In this case it is advisable to estimate the model parameters externally and then to run this function with those estimates provided via the commands \code{IP} and \code{Ability}.
 
 Aberrant response behavior is (potentially) indicated by small values of lzpoly (i.e., in the left tail of the sampling distribution).
 
-Missing values in \code{matrix} are imputed by one of three single imputation methods: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
+Missing values in \code{matrix} are dealt with by means of pairwise elimination by default. Alternatively, single imputation is also available. Three single imputation methods exist: Hotdeck imputation (\code{NA.method = "Hotdeck"}), nonparametric model imputation (\code{NA.method = "NPModel"}), and parametric model imputation (\code{NA.method = "PModel"}); see Zhang and Walker (2008). 
 \itemize{
 \item Hotdeck imputation replaces missing responses of an examinee ('recipient') by item scores from the examinee which is closest to the recipient ('donor'), based on the recipient's nonmissing item scores. The similarity between nonmissing item scores of recipients and donors is based on the sum of absolute differences between the corresponding item scores. The donor's response pattern is deemed to be the most similar to the recipient's response pattern in the group, so item scores of the former are used to replace the corresponding missing values of the latter. When multiple donors are equidistant to a recipient, one donor is randomly drawn from the set of all donors.
 \item The nonparametric model imputation method is similar to the hotdeck imputation, but item scores are generated from multinomial distributions with probabilities defined by donors with similar total score than the recipient (based on all items except the NAs).
