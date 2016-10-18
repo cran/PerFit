@@ -114,6 +114,8 @@ Tatsuoka, K. K., and Tatsuoka, M. M. (1982) Detection of aberrant response patte
 
 Tatsuoka, K. K., and Tatsuoka, M. M. (1983) Spotting erroneous rules of operation by the individual consistency index. \emph{Journal of Educational Measurement}, \bold{20(3)}, 221--230.
 
+Tendeiro, J. N., Meijer, R. R., and Niessen, A. S. M. (2016). PerFit: An R Package for Person-Fit Analysis in IRT. \emph{Journal of Statistical Software}, \bold{74(5)}, 1--27.
+
 van der Flier, H. (1977) Environmental factors and deviant response patterns. In Y. H. Poortinga (Ed.), \emph{Basic problems in cross-cultural psychology.} Amsterdam: The Netherlands.
 
 van der Flier, H. (1980) \emph{Vergelijkbaarheid van individuele testprestaties} [Comparability of individual test performance]. Lisse: The Netherlands.
