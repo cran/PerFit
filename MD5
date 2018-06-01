@@ -1,4 +1,4 @@
-1388e97ef48fdf04651857b68f288bbb *DESCRIPTION
+ef39160a2916f02300beee5729dcad03 *DESCRIPTION
 3ef8a9dc00e35994d8cc5ef5d0d548c3 *NAMESPACE
 768a7739b885680a248bbb180af4f0ed *R/ADE.R
 d5b938b5a1d702a9973422f3356e6648 *R/Accessory.R
@@ -32,9 +32,10 @@ ea41866d4c08eae982c09c0a8d98289f *R/ZU3.R
 f35d26b677bdc13ff53948fdf2a965bf *R/lzpoly.R
 f724f496f5cc04051d0b188817e27fdc *R/lzstar.R
 ac358dbfd1e9be58cc029cbc0650d90f *R/rpbis.R
-4e1d9b5ee5ffb28f0139bbba2cb9d984 *data/InadequacyData.RData
-403e9260ee5f74f88c8185c562afcdd8 *data/IntelligenceData.RData
-553139d2c4a51a6921dd275f409e0ee4 *data/PhysFuncData.RData
+6b9ea620d9208a902c7f4f3cd362f7c5 *build/partial.rdb
+01d46db5cec0bb4174e20c2861501b3f *data/InadequacyData.RData
+9b28a2ff80e95f65360a6e00b616c132 *data/IntelligenceData.RData
+b9f89d9f8755367f5a33a5a94454b6dc *data/PhysFuncData.RData
 9b14c68168ffad7129c1965e81f48509 *inst/CITATION
 406a030ea0ff65b7c43dc25e5e857dd3 *man/ADE.KB.Rd
 b57cf67a1c622fc907ca209907e77de0 *man/C.index.Rd
@@ -45,7 +46,7 @@ d0cb2bcfea3fdeeffdcf0e2b0c70e8d9 *man/InadequacyData.Rd
 3dad9f05bbabe04f40c17404e92da57c *man/IntelligenceData.Rd
 587a829013c12cc4c6f203c859132ba4 *man/NCI.Rd
 8b84d5a25739f0da4caa192a7356417e *man/PRFplot.Rd
-af29f8b94005659110a6616caad7a8d4 *man/PerFit-package.Rd
+9e0461d9ce74dfc9821d8725f64c9e0f *man/PerFit-package.Rd
 63a42f0c8af44c51006eac0ddc1f1783 *man/PerFitPFS.Rd
 0c17fbf8707f1c0200135243c69b4ce6 *man/PerFitSE.Rd
 6d9600d9f7eb748e25e4bb1740621f72 *man/PhysFuncData.Rd

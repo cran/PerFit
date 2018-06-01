@@ -1,17 +1,19 @@
 \name{PerFit-package}
 \alias{PerFit-package}
+\alias{PerFit}
 \docType{package}
-\title{Person Fit}
-\description{Person fit consists of a set of techniques aimed at detecting unusual responses to tests or questionnaires. There are several person-fit statistics available in the literature, see Karabatsos (2003) and Meijer and Sijtsma (2001) for comprehensive reviews. Both dichotomous and polytomous types of items are considered. This R-package outputs the values of the chosen person-fit statistic, the IDs of the respondents that were flagged, and plots the sample distribution of the scores of the person-fit statistic. Nonparametric person response functions (Sijtsma and Meijer, 2001) may also be requested in order to help interpreting individual answering behaviors (dichotomous data only).
+
+\title{
+\packageTitle{PerFit}
 }
+
+\description{
+Person fit consists of a set of techniques aimed at detecting unusual responses to tests or questionnaires. There are several person-fit statistics available in the literature, see Karabatsos (2003) and Meijer and Sijtsma (2001) for comprehensive reviews. Both dichotomous and polytomous types of items are considered. This R-package outputs the values of the chosen person-fit statistic, the IDs of the respondents that were flagged, and plots the sample distribution of the scores of the person-fit statistic. Nonparametric person response functions (Sijtsma and Meijer, 2001) may also be requested in order to help interpreting individual answering behaviors (dichotomous data only).
+}
+
 \details{
-\tabular{ll}{
-Package: \tab PerFit\cr
-Type: \tab Package\cr
-Version: \tab 1.4\cr
-Date: \tab 2015-07-13\cr
-License: \tab GPL Version 2 or later\cr
-}
+\packageDESCRIPTION{PerFit}
+\packageIndices{PerFit}
 The \pkg{PerFit} package contains several person-fit functions. The goal is to detect response vectors that seem to be strange in terms of the sample of respondents or in terms to an item response theory (IRT) model.
 
 There are many person-fit statistics available in the literature. Statistics are typically categorized according to the type of items (Dicho = dichotomous, Poly = polytomous) and the type of IRT model (NParam=nonparametric, Param=parametric) that they apply to. The current version of \pkg{PerFit} includes the following statistics:
@@ -73,15 +75,14 @@ The package underwent a major revision:
 \itemize{
 \item The default missing values approach is now pairwise elimination. The imputation methods introduced with version 1.3.1 are still available.
 \item A bug was removed from function \code{lzpoly()} (many thanks to Marco Bressan for spotting it!).
+\item The PerFit-package.Rd file was updated (version 1.4.2).
 }
-
 }
-
 }
 \author{
-Jorge N. Tendeiro
+\packageAuthor{PerFit}
 
-Maintainer: Jorge N. Tendeiro \email{j.n.tendeiro@rug.nl}
+Maintainer: \packageMaintainer{PerFit}
 }
 \references{
 Donlon, T. F., and Fischer, F. E. (1968) An index of an individual's agreement with group-defined item difficulties. \emph{Educational and Psychological Measurement}, \bold{28(1)}, 105--113.
@@ -124,6 +125,7 @@ van der Flier, H. (1982) Deviant response patterns and comparability of test sco
 }
 
 \examples{
+
 # Load the inadequacy scale data (dichotomous item scores):
 data(InadequacyData)
 
