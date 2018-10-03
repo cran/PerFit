@@ -76,6 +76,7 @@ The package underwent a major revision:
 \item The default missing values approach is now pairwise elimination. The imputation methods introduced with version 1.3.1 are still available.
 \item A bug was removed from function \code{lzpoly()} (many thanks to Marco Bressan for spotting it!).
 \item The PerFit-package.Rd file was updated (version 1.4.2).
+\item A bug in function \code{U3poly} was fixed (version 1.4.3, October 2018). All credit goes to Marek Muszynski for spotting the issue.
 }
 }
 }

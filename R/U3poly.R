@@ -90,20 +90,27 @@ U3poly <- function(matrix, Ncat,
         W <- as.vector(matrix.ISD.II %*% logits.ISD)
         # 
         logits.ISD <- matrix(logits.ISD, nrow = I.noNA, byrow = TRUE) # a matrix
-        if (Ncat>2)  {cumlogits.ISD <- cbind(rep(0, I.noNA), t(apply(logits.ISD, 1, cumsum)))}
-        if (Ncat==2) {cumlogits.ISD <- cbind(rep(0, I.noNA), logits.ISD)}
-        V        <- matrix(rep(cumlogits.ISD[1, ], Ncat), ncol = Ncat, byrow = FALSE)
-        add.term <- matrix(rep(cumlogits.ISD[2, ], nrow(V)), ncol = Ncat, byrow = TRUE)
-        V        <- V + add.term
-        T        <- sapply(2:sum(dim(V)), function(x) {min(V[col(V)+row(V) == x])})
-        for (i in 3:I.noNA) {
-          V        <- matrix(rep(T, Ncat), ncol = Ncat, byrow = FALSE)
-          add.term <- matrix(rep(cumlogits.ISD[i, ], nrow(V)), ncol = Ncat, byrow = TRUE)
+        
+        if (I.noNA > 1)
+        {
+          if (Ncat>2)  {cumlogits.ISD <- cbind(rep(0, I.noNA), t(apply(logits.ISD, 1, cumsum)))}
+          if (Ncat==2) {cumlogits.ISD <- cbind(rep(0, I.noNA), logits.ISD)}
+          V        <- matrix(rep(cumlogits.ISD[1, ], Ncat), ncol = Ncat, byrow = FALSE)
+          add.term <- matrix(rep(cumlogits.ISD[2, ], nrow(V)), ncol = Ncat, byrow = TRUE)
           V        <- V + add.term
           T        <- sapply(2:sum(dim(V)), function(x) {min(V[col(V)+row(V) == x])})
+          for (i in 3:I.noNA) {
+            V        <- matrix(rep(T, Ncat), ncol = Ncat, byrow = FALSE)
+            add.term <- matrix(rep(cumlogits.ISD[i, ], nrow(V)), ncol = Ncat, byrow = TRUE)
+            V        <- V + add.term
+            T        <- sapply(2:sum(dim(V)), function(x) {min(V[col(V)+row(V) == x])})
+          }
+          minW <- T
+        } else
+        {
+          minW <- sapply(0:(I.noNA*M), function(x) {sum(sort(as.vector(logits.ISD), decreasing = FALSE)[0:x])})
         }
         maxW <- sapply(0:(I.noNA*M), function(x) {sum(sort(as.vector(logits.ISD), decreasing = TRUE)[0:x])})
-        minW <- T
         den  <- maxW - minW
         #  
         tmp  <- (maxW[sum(vec, na.rm = TRUE) + 1] - W) / den[sum(vec, na.rm = TRUE) + 1]
@@ -114,5 +121,5 @@ U3poly <- function(matrix, Ncat,
   }
   # Export results:
   export.res.NP(matrix, N, res, "U3poly", vector("list", 5) , Ncat=Ncat, NA.method, 
-               IRT.PModel, res.NA[[2]], Ability.PModel, res.NA[[3]], IP.NA, Ability.NA, res.NA[[4]])
+                IRT.PModel, res.NA[[2]], Ability.PModel, res.NA[[3]], IP.NA, Ability.NA, res.NA[[4]])
 }
