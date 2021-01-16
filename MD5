@@ -1,4 +1,4 @@
-f31e221843d729d24584c608bfd1b7ad *DESCRIPTION
+7e8865c2b323d78bb9c2cca191d38b54 *DESCRIPTION
 3ef8a9dc00e35994d8cc5ef5d0d548c3 *NAMESPACE
 768a7739b885680a248bbb180af4f0ed *R/ADE.R
 d5b938b5a1d702a9973422f3356e6648 *R/Accessory.R
@@ -18,7 +18,7 @@ da3ac22ccec79863c3c70e62d65ef2ae *R/NPModel.R
 945e2fa81ae5aea3e7c8ea03eca5bc73 *R/NPModelPoly.R
 74d98cd749c40a1d980cc499fc53bea0 *R/PModel.R
 b6f83f5efb9acf2aba35b7398a4dc088 *R/PModelPoly.R
-a842fbc4f5e01e450c7bb664de7a3378 *R/PRF.R
+9590eff826da8d63d8f64f801f103fc3 *R/PRF.R
 35f3828f93d26fa73d893996273890dd *R/PerFitPFS.R
 ca6af02ca278f21e9062bd89dea77a24 *R/PerFitSE.R
 7463fb1d86c10c872527fede8bd9c166 *R/PlotPerFit.R
@@ -32,7 +32,8 @@ ea41866d4c08eae982c09c0a8d98289f *R/ZU3.R
 f35d26b677bdc13ff53948fdf2a965bf *R/lzpoly.R
 f724f496f5cc04051d0b188817e27fdc *R/lzstar.R
 ac358dbfd1e9be58cc029cbc0650d90f *R/rpbis.R
-ecaf9a7d1e61fae340adddf5914f4f94 *build/partial.rdb
+821f955a1d70d98c85ceb4e210eeeac5 *README.md
+8f929de84ecbd1aa33b2cba503e7abd5 *build/partial.rdb
 01d46db5cec0bb4174e20c2861501b3f *data/InadequacyData.RData
 9b28a2ff80e95f65360a6e00b616c132 *data/IntelligenceData.RData
 b9f89d9f8755367f5a33a5a94454b6dc *data/PhysFuncData.RData
@@ -46,7 +47,7 @@ d0cb2bcfea3fdeeffdcf0e2b0c70e8d9 *man/InadequacyData.Rd
 3dad9f05bbabe04f40c17404e92da57c *man/IntelligenceData.Rd
 587a829013c12cc4c6f203c859132ba4 *man/NCI.Rd
 8b84d5a25739f0da4caa192a7356417e *man/PRFplot.Rd
-fd48c0d0cbf15b7f58b8e93ee5fb7777 *man/PerFit-package.Rd
+31c464967b005a58dae12d44eb1cd462 *man/PerFit-package.Rd
 63a42f0c8af44c51006eac0ddc1f1783 *man/PerFitPFS.Rd
 0c17fbf8707f1c0200135243c69b4ce6 *man/PerFitSE.Rd
 6d9600d9f7eb748e25e4bb1740621f72 *man/PhysFuncData.Rd
