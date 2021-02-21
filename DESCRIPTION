@@ -1,10 +1,10 @@
 Package: PerFit
 Type: Package
 Title: Person Fit
-Version: 1.4.4
-Date: 2021-01-16
+Version: 1.4.5
+Date: 2021-02-18
 Author: Jorge N. Tendeiro
-Maintainer: Jorge N. Tendeiro <j.n.tendeiro@rug.nl>
+Maintainer: Jorge N. Tendeiro <tendeiro@hiroshima-u.ac.jp>
 Description: Several person-fit statistics 
   (PFSs; Meijer and Sijtsma, 2001, <doi:10.1177/01466210122031957>) 
   are offered. These statistics allow assessing whether
@@ -19,6 +19,6 @@ Depends: ltm, mirt
 License: GPL (>= 2)
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-01-16 10:15:21 UTC; bigomon
+Packaged: 2021-02-17 22:49:44 UTC; bigomon
 Repository: CRAN
-Date/Publication: 2021-01-17 00:00:02 UTC
+Date/Publication: 2021-02-22 00:10:02 UTC
